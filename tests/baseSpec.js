@@ -107,7 +107,7 @@ describe('base class', function () {
 			next();
  		});
  	});
-	describe('prepareData', function () {
+	describe('prepareRequestData', function () {
 		it('should prepare data for scrape function', function (next) {
 			var url     = 'http://pluto.dev/price/flight';
 			var options = {
@@ -116,7 +116,7 @@ describe('base class', function () {
 				airline: 'garuda'
 			}
 			var base = new Base(options);
-			var data = base.prepareData();
+			var data = base.prepareRequestData();
 			expect(data.airline).to.eq('garuda');
 			expect(data.action).to.eq('price');
 			expect(data.query.ori).to.eq('cgk');
@@ -124,7 +124,7 @@ describe('base class', function () {
 			next();
  		});
  	});
-	describe('prepareQuery', function () {
+	describe('prepareRequestQuery', function () {
 		it('should prepare query for request function', function (next) {
 			var url     = 'http://pluto.dev/price/flight';
 			var options = {
@@ -133,20 +133,58 @@ describe('base class', function () {
 				airline: 'garuda'
 			}
 			var base = new Base(options);
-			var query = base.prepareQuery();
+			var query = base.prepareRequestQuery();
 			expect(query).to.contain('ori');
 			expect(query).to.contain('cgk');
 			expect(query).to.contain('dst');
 			expect(query).to.contain('sub');
 			next();
  		});
- 	}); 	
+ 	});
+	describe('prepareDatabaseQuery', function () {
+		var options = {
+			airline: 'lion',
+			dt     : {
+				ori       : 'jog',
+				dst       : 'pnk',
+				flightCode: 'abc',
+				classCode : 'xx',
+			},
+		};
+		it('should return query for db', function (next) {
+			var base = new Base(options);
+			var query = base.prepareDatabaseQuery();
+			expect(query.query.filtered.filter.and.length).to.eq(5);
+			next();
+ 		});
+		it('should return query for db with a transit', function (next) {
+			options.dt.transit = 'pnk';
+			var base = new Base(options);
+			var query = base.prepareDatabaseQuery();
+			expect(query.query.filtered.filter.and.length).to.eq(6);
+			next();
+ 		});
+		it('should return query for db with two transit', function (next) {
+			options.dt.transit2 = 'pdg';
+			var base = new Base(options);
+			var query = base.prepareDatabaseQuery();
+			expect(query.query.filtered.filter.and.length).to.eq(7);
+			next();
+ 		});
+		it('should return query for db with three transit', function (next) {
+			options.dt.transit3 = 'bdo';
+			var base = new Base(options);
+			var query = base.prepareDatabaseQuery();
+			expect(query.query.filtered.filter.and.length).to.eq(8);
+			next();
+ 		});
+ 	});
 	describe('getCache', function () {
 		this.timeout(10000);
 		it('should get cache price from db based on dt', function (next) {
 			var options = {
 				dt     : {
-					ori: 'jog', 
+					ori: 'jog',
 					dst: 'pnk',
 					flightCode: 'abc',
 					classCode: 'xx',
@@ -163,16 +201,62 @@ describe('base class', function () {
 					next(err);
 				});
  		});
- 	}); 	
+ 	});
+	describe('saveCache', function () {
+		this.timeout(5000);
+		it('should save cache to database', function (next) {
+			var options = {
+				airline: 'lion',
+				dt     : {
+					ori       : 'jog',
+					dst       : 'pnk',
+					flightCode: 'abc',
+					classCode : 'xx',
+				},
+			};
+			var base = new Base(options);
+			var price = {
+				"adult" : 1000000,
+				"child" : 1000000,
+				"infant": 50000,
+				"basic" : 1000000,
+			}
+			base.saveCache(price, function (err, res) {
+				if (err)
+					return next(err);
+				try{res = JSON.parse(res); } catch(err){return next(err)}
+				expect(res.created).to.exist;
+				expect(res._index).to.eq(base.index);
+				expect(res._type).to.eq(base.type);
+				return next();
+			});
+ 		});
+ 	});
+	describe('generateId', function () {
+		it('should generate id based on data', function (next) {
+			var data = {
+				origin     : 'cgk',
+				destination: 'sub',
+				airline    : 'lion',
+				flight     : 'abc',
+				class      : 'xx',
+				prices     : {}
+			};
+			var base = new Base();
+			var id = base.generateId(data);
+			expect(id).to.eq('cgksublionabcxx')
+			next();
+ 		});
+ 	});
 	describe('get', function () {
-		this.timeout(10000);
+		this.timeout(60000);
 		// commented to move along faster
 		/*it('should get price from scrape -- url', function (next) {
 			var options = {
 				scrape: 'http://pluto.dev/0/price/garuda',
 				dt: {
 					user     : 'IANTONI.JKTGI229T',
-					dep_date : '27+10+2014',
+					dep_date : '27 10 2014',
 					ori      : 'cgk',
 					dst      : 'jog',
 					dep_radio: 'c1',
@@ -184,7 +268,6 @@ describe('base class', function () {
 			base.get(100)
 				.then(function (res) {
 					var body = JSON.parse(res.body);
-					console.log(body.body);
 					expect(body.body).to.exist;
 					next();
 				})
@@ -195,8 +278,8 @@ describe('base class', function () {
 		it('should get price from scrape -- function', function (next) {
 			var scrapeFn = function (data) {
 				return Promise.resolve({
-					"success": true, 
-					"body": {"basic": 2616000, "tax": 266600, "total": 2882600 } 
+					"success": true,
+					"body": {"basic": 2616000, "tax": 266600, "total": 2882600 }
 				});
 			}
 			var options = {
@@ -214,6 +297,22 @@ describe('base class', function () {
 				.catch(function (err) {
 					next(err);
 				})
+ 		});
+ 	});
+	describe('isCacheComplete', function () {
+		it('should false if cache incomplete', function (next) {
+			var cache = {'adult': 1000000 };
+			var base = new Base();
+			var success = base.isCacheComplete(cache);
+			expect(success).to.not.ok;
+			next();
+ 		});
+		it('should true if cache complete', function (next) {
+			var cache = {'adult': 1000000, 'child': 1000000, 'infant': 1000000, 'basic': 1000000, };
+			var base = new Base();
+			var success = base.isCacheComplete(cache);
+			expect(success).to.ok;
+			next();
  		});
  	});
 	/*describe('Subsuite', function () {

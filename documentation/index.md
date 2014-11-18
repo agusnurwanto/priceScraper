@@ -18,7 +18,7 @@
 
 ### setOptions() 
 
-setting options, using one arguments: an object with key-value pair, 
+setting options, using one arguments: an object with key-value pair,
 or two arguments, with the first as key and second as value
 
 
@@ -39,18 +39,25 @@ setting mode before running scrape price
 
 
 
-### prepareData() 
+### prepareRequestData() 
 
 preparing data for scrape function arguments
 
 **Returns**: `Object`, Data formatted for parameter in scraper function
 
 
-### prepareQuery() 
+### prepareRequestQuery() 
 
 preparing querystring for request function
 
 **Returns**: `String`, String formatted for parameter in request function
+
+
+### prepareDatabaseQuery() 
+
+create query for retrieving data from db
+
+**Returns**: `string`, query for db
 
 
 ### getCache() 
@@ -58,6 +65,16 @@ preparing querystring for request function
 Get cache data from db
 
 **Returns**: `Object`, Data price for current dt
+
+
+### saveCache(price) 
+
+save price data to db
+
+**Parameters**
+
+**price**: `Object`, object containing price data
+
 
 
 ### get(mode) 
@@ -69,6 +86,28 @@ get price by scraping it as defined in scrape option
 **mode**: `string`, Passengers count e.g.(100,110,101)
 
 **Returns**: `Object`, Object Promise
+
+
+### generateId(data) 
+
+internal function used when saving data to db
+
+**Parameters**
+
+**data**: `Object`, Save to db
+
+**Returns**: `string`, id for db
+
+
+### isCacheComplete(cache) 
+
+check if cache qualified as complete
+
+**Parameters**
+
+**cache**: `Object`, data from db
+
+**Returns**: `Boolean`, whether cache incomplete or not
 
 
 

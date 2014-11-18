@@ -4,10 +4,14 @@
      - [setOptions](#base-class-setoptions)
      - [setOption](#base-class-setoption)
      - [setMode](#base-class-setmode)
-     - [prepareData](#base-class-preparedata)
-     - [prepareQuery](#base-class-preparequery)
+     - [prepareRequestData](#base-class-preparerequestdata)
+     - [prepareRequestQuery](#base-class-preparerequestquery)
+     - [prepareDatabaseQuery](#base-class-preparedatabasequery)
      - [getCache](#base-class-getcache)
+     - [saveCache](#base-class-savecache)
+     - [generateId](#base-class-generateid)
      - [get](#base-class-get)
+     - [isCacheComplete](#base-class-iscachecomplete)
 <a name=""></a>
  
 <a name="base-class"></a>
@@ -149,8 +153,8 @@ expect(base.dt.adult).to.eq('1');
 next();
 ```
 
-<a name="base-class-preparedata"></a>
-## prepareData
+<a name="base-class-preparerequestdata"></a>
+## prepareRequestData
 should prepare data for scrape function.
 
 ```js
@@ -161,7 +165,7 @@ var options = {
 	airline: 'garuda'
 }
 var base = new Base(options);
-var data = base.prepareData();
+var data = base.prepareRequestData();
 expect(data.airline).to.eq('garuda');
 expect(data.action).to.eq('price');
 expect(data.query.ori).to.eq('cgk');
@@ -169,8 +173,8 @@ expect(data.query.dst).to.eq('sub');
 next();
 ```
 
-<a name="base-class-preparequery"></a>
-## prepareQuery
+<a name="base-class-preparerequestquery"></a>
+## prepareRequestQuery
 should prepare query for request function.
 
 ```js
@@ -181,11 +185,52 @@ var options = {
 	airline: 'garuda'
 }
 var base = new Base(options);
-var query = base.prepareQuery();
+var query = base.prepareRequestQuery();
 expect(query).to.contain('ori');
 expect(query).to.contain('cgk');
 expect(query).to.contain('dst');
 expect(query).to.contain('sub');
+next();
+```
+
+<a name="base-class-preparedatabasequery"></a>
+## prepareDatabaseQuery
+should return query for db.
+
+```js
+var base = new Base(options);
+var query = base.prepareDatabaseQuery();
+expect(query.query.filtered.filter.and.length).to.eq(5);
+next();
+```
+
+should return query for db with a transit.
+
+```js
+options.dt.transit = 'pnk';
+var base = new Base(options);
+var query = base.prepareDatabaseQuery();
+expect(query.query.filtered.filter.and.length).to.eq(6);
+next();
+```
+
+should return query for db with two transit.
+
+```js
+options.dt.transit2 = 'pdg';
+var base = new Base(options);
+var query = base.prepareDatabaseQuery();
+expect(query.query.filtered.filter.and.length).to.eq(7);
+next();
+```
+
+should return query for db with three transit.
+
+```js
+options.dt.transit3 = 'bdo';
+var base = new Base(options);
+var query = base.prepareDatabaseQuery();
+expect(query.query.filtered.filter.and.length).to.eq(8);
 next();
 ```
 
@@ -196,7 +241,7 @@ should get cache price from db based on dt.
 ```js
 var options = {
 	dt     : {
-		ori: 'jog', 
+		ori: 'jog',
 		dst: 'pnk',
 		flightCode: 'abc',
 		classCode: 'xx',
@@ -214,6 +259,57 @@ base.getCache()
 	});
 ```
 
+<a name="base-class-savecache"></a>
+## saveCache
+should save cache to database.
+
+```js
+var options = {
+	airline: 'lion',
+	dt     : {
+		ori       : 'jog',
+		dst       : 'pnk',
+		flightCode: 'abc',
+		classCode : 'xx',
+	},
+};
+var base = new Base(options);
+var price = {
+	"adult" : 1000000,
+	"child" : 1000000,
+	"infant": 50000,
+	"basic" : 1000000,
+}
+base.saveCache(price, function (err, res) {
+	if (err)
+		return next(err);
+	try{res = JSON.parse(res); } catch(err){return next(err)}
+	expect(res.created).to.exist;
+	expect(res._index).to.eq(base.index);
+	expect(res._type).to.eq(base.type);
+	return next();
+});
+```
+
+<a name="base-class-generateid"></a>
+## generateId
+should generate id based on data.
+
+```js
+var data = {
+	origin     : 'cgk',
+	destination: 'sub',
+	airline    : 'lion',
+	flight     : 'abc',
+	class      : 'xx',
+	prices     : {}
+};
+var base = new Base();
+var id = base.generateId(data);
+expect(id).to.eq('cgksublionabcxx')
+next();
+```
+
 <a name="base-class-get"></a>
 ## get
 should get price from scrape -- function.
@@ -221,8 +317,8 @@ should get price from scrape -- function.
 ```js
 var scrapeFn = function (data) {
 	return Promise.resolve({
-		"success": true, 
-		"body": {"basic": 2616000, "tax": 266600, "total": 2882600 } 
+		"success": true,
+		"body": {"basic": 2616000, "tax": 266600, "total": 2882600 }
 	});
 }
 var options = {
@@ -240,5 +336,27 @@ base.get(100)
 	.catch(function (err) {
 		next(err);
 	})
+```
+
+<a name="base-class-iscachecomplete"></a>
+## isCacheComplete
+should false if cache incomplete.
+
+```js
+var cache = {'adult': 1000000 };
+var base = new Base();
+var success = base.isCacheComplete(cache);
+expect(success).to.not.ok;
+next();
+```
+
+should true if cache complete.
+
+```js
+var cache = {'adult': 1000000, 'child': 1000000, 'infant': 1000000, 'basic': 1000000, };
+var base = new Base();
+var success = base.isCacheComplete(cache);
+expect(success).to.ok;
+next();
 ```
 
