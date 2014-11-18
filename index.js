@@ -13,6 +13,7 @@ var priceScraperPrototype = {
 	prepareData : prepareData,
 	prepareQuery: prepareQuery,
 	getCache: getCache,
+	get: get,
 }
 var priceScraper = baseClass.extend(priceScraperPrototype);
 /**
@@ -124,7 +125,11 @@ function getCache () {
 		return Promise.reject(err);
 	});
 }
-
+/**
+ * get price by scraping it as defined in scrape option
+ * @param  {string} mode Passengers count e.g.(100,110,101)
+ * @return {Object}      Object Promise
+ */
 function get(mode) {
 	this.setMode(mode);
 	if (typeof this.scrape === 'function') {
@@ -132,7 +137,8 @@ function get(mode) {
 		return this.scrape(data);
 	} else {
 		var query = this.prepareQuery();
-		return scraper.get(this.scrape + '?' + query);
+		var url = this.scrape + '?' + query;
+		return scraper.get(url);
 	}
 }
- module.exports = priceScraper;
+module.exports = priceScraper;

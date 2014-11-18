@@ -1,31 +1,32 @@
 {
-  "name": "priceScraper",
-  "version": "1.0.0",
-  "description": "priceScraper ============",
-  "main": "index.js",
-  "scripts": {
-    "test": "cd tests && mocha *Spec.js -R spec",
-    "docs": "jsdoc2md index.js > API.md"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/raabbajam/priceScraper.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/raabbajam/priceScraper/issues"
-  },
-  "homepage": "https://github.com/raabbajam/priceScraper",
-  "devDependencies": {
-    "chai": "^1.10.0"
-  },
-  "dependencies": {
-    "debug": "^2.1.0",
-    "elasticsearchclient": "^0.5.3",
-    "promise": "^6.0.1",
-    "request": "^2.48.0",
-    "underscore": "^1.7.0",
-    "underscore.deep": "^0.5.1"
-  }
+	"name": "priceScraper",
+	"version": "1.0.0",
+	"description": "priceScraper ============",
+	"main": "index.js",
+	"scripts": {
+		"test": "cd tests && DEBUG=*-mocha mocha *Spec.js -R spec",
+		"docs": "jsdox --output documentation index.js",
+		"testdocs": "cd tests && mocha *Spec.js -R markdown > ../TEST.md"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/raabbajam/priceScraper.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/raabbajam/priceScraper/issues"
+	},
+	"homepage": "https://github.com/raabbajam/priceScraper",
+	"devDependencies": {
+		"chai": "^1.10.0"
+	},
+	"dependencies": {
+		"debug": "^2.1.0",
+		"elasticsearchclient": "^0.5.3",
+		"promise": "^6.0.1",
+		"request": "^2.48.0",
+		"underscore": "^1.7.0",
+		"underscore.deep": "^0.5.1"
+	}
 }

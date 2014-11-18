@@ -1,7 +1,3 @@
-
-> priceScraper@1.0.0 test /opt/lampp/htdocs/nodejs/priceScraper
-> cd tests && mocha *Spec.js -R markdown
-
 # TOC
    - [base class](#base-class)
      - [init](#base-class-init)
@@ -10,6 +6,8 @@
      - [setMode](#base-class-setmode)
      - [prepareData](#base-class-preparedata)
      - [prepareQuery](#base-class-preparequery)
+     - [getCache](#base-class-getcache)
+     - [get](#base-class-get)
 <a name=""></a>
  
 <a name="base-class"></a>
@@ -189,5 +187,58 @@ expect(query).to.contain('cgk');
 expect(query).to.contain('dst');
 expect(query).to.contain('sub');
 next();
+```
+
+<a name="base-class-getcache"></a>
+## getCache
+should get cache price from db based on dt.
+
+```js
+var options = {
+	dt     : {
+		ori: 'jog', 
+		dst: 'pnk',
+		flightCode: 'abc',
+		classCode: 'xx',
+	},
+	airline: 'lion'
+};
+var base = new Base(options);
+base.getCache()
+	.then(function (res) {
+		expect(res.adult).to.gt(0);
+		next();
+	})
+	.catch(function (err) {
+		next(err);
+	});
+```
+
+<a name="base-class-get"></a>
+## get
+should get price from scrape -- function.
+
+```js
+var scrapeFn = function (data) {
+	return Promise.resolve({
+		"success": true, 
+		"body": {"basic": 2616000, "tax": 266600, "total": 2882600 } 
+	});
+}
+var options = {
+	scrape: scrapeFn,
+	dt: {ori: 'cgk', dst: 'jog', },
+	airline: 'garuda'
+}
+var base = new Base(options);
+base.get(100)
+	.then(function (res) {
+		var body = res.body;
+		expect(body).to.exist;
+		next();
+	})
+	.catch(function (err) {
+		next(err);
+	})
 ```
 

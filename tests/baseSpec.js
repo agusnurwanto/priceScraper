@@ -1,4 +1,5 @@
 var expect = require('chai').expect;
+var Promise = require('promise');
 var Base   = require('../../priceScraper');
 describe('base class', function () {
 	this.timeout(3000)
@@ -141,7 +142,7 @@ describe('base class', function () {
  		});
  	}); 	
 	describe('getCache', function () {
-		this.timeout(10000)
+		this.timeout(10000);
 		it('should get cache price from db based on dt', function (next) {
 			var options = {
 				dt     : {
@@ -163,6 +164,58 @@ describe('base class', function () {
 				});
  		});
  	}); 	
+	describe('get', function () {
+		this.timeout(10000);
+		// commented to move along faster
+		/*it('should get price from scrape -- url', function (next) {
+			var options = {
+				scrape: 'http://pluto.dev/0/price/garuda',
+				dt: {
+					user     : 'IANTONI.JKTGI229T',
+					dep_date : '27+10+2014',
+					ori      : 'cgk',
+					dst      : 'jog',
+					dep_radio: 'c1',
+					ret_radio: 'c1',
+				},
+				airline: 'garuda'
+			}
+			var base = new Base(options);
+			base.get(100)
+				.then(function (res) {
+					var body = JSON.parse(res.body);
+					console.log(body.body);
+					expect(body.body).to.exist;
+					next();
+				})
+				.catch(function (err) {
+					next(err);
+				})
+ 		});*/
+		it('should get price from scrape -- function', function (next) {
+			var scrapeFn = function (data) {
+				return Promise.resolve({
+					"success": true, 
+					"body": {"basic": 2616000, "tax": 266600, "total": 2882600 } 
+				});
+			}
+			var options = {
+				scrape: scrapeFn,
+				dt: {ori: 'cgk', dst: 'jog', },
+				airline: 'garuda'
+			}
+			var base = new Base(options);
+			base.get(100)
+				.then(function (res) {
+					var body = res.body;
+					expect(body).to.exist;
+					next();
+				})
+				.catch(function (err) {
+					next(err);
+				})
+ 		});
+ 	});
 	/*describe('Subsuite', function () {
 		it('should extend parent to child method', function (next) {
 			next();
