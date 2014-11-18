@@ -1,6 +1,8 @@
 var baseClass = require('./base');
 var scraper   = new (require('./scraper'));
+var db = require('./db');
 var _         = require('underscore');
+var Promise = require('promise');
 var querystring = require('querystring');
 _.mixin(require('underscore.deep'));
 var priceScraperPrototype = {
@@ -10,6 +12,7 @@ var priceScraperPrototype = {
 	setMode     : setMode,
 	prepareData : prepareData,
 	prepareQuery: prepareQuery,
+	getCache: getCache,
 }
 var priceScraper = baseClass.extend(priceScraperPrototype);
 /**
@@ -17,6 +20,7 @@ var priceScraper = baseClass.extend(priceScraperPrototype);
  * @param  {Object} args Custom options.
  */
 function init(args) {
+	this.db = db;
 	this.setOptions(args);
 }
 /**
@@ -27,15 +31,16 @@ function setOptions() {
 	if (arguments.length === 1) {
 		var args = arguments[0];
 		var defaults = {
-		scrape: '', //if url will be used as request with query, if function will be executed with dt object
-		dt: {ori: '', dst: '', flightCode: '', classCode: '' },
-		airline: '',
-			db: ''
+			scrape: '', //if url will be used as request with query, if function will be executed with dt object
+			dt: {ori: '', dst: '', flightCode: '', classCode: '' },
+			airline: ''
 		}
 		var options = _.deepExtend(defaults, args);
 		for (var key in defaults) {
 			var value = options[key];
 			this[key] = value;
+			if (typeof this[key] === 'string')
+				this[key] = this[key].toLowerCase();
 		}
 	} else {
 		var key = arguments[0];
@@ -64,18 +69,62 @@ function setMode(mode) {
 	this.dt.infant = aMode[2];
 	return this;
 }
+/**
+ * preparing data for scrape function arguments
+ * @return {Object} Data formatted for parameter in scraper function
+ */
 function prepareData () {
 	var _dt  = {}
 	var dt   = _.deepExtend(this.dt, _dt)
 	var data = {airline: this.airline, action: 'price', query: dt }
 	return data;
 }
+/**
+ * preparing querystring for request function
+ * @return {String} String formatted for parameter in request function
+ */
 function prepareQuery () {
 	var _dt  = {}
 	var dt   = _.deepExtend(this.dt, _dt)
 	var query = querystring.stringify(dt);
-	return query
+	return query;
 }
+/**
+ * Get cache data from db
+ * @return {Object} Data price for current dt
+ */
+function getCache () {
+	var _this = this;
+	return new Promise(function (resolve, reject) {	
+		var _ori = _this.dt.ori.toUpperCase();
+		var _dst = _this.dt.dst.toUpperCase();
+		var _flightCode = _this.dt.flightCode;
+		var _classCode = _this.dt.classCode;
+		var _airline = _this.airline;
+		var query = {"size":1, "query": {"filtered": {"filter": {"and" : [
+			{ "term": { "origin": _ori } }, 
+			{ "term": { "destination": _dst} }, 
+			{ "term": { "flight": _flightCode } }, 
+			{ "term": { "class": _classCode } }, 
+			{ "term": { "airline": _airline} } ] } } } };
+		_this.db.search('pluto', 'price', query, function (err, res) {
+			if (err)
+				return reject(err)
+			try {res = JSON.parse(res)} catch(err) { return reject(err)}
+			// console.log(JSON.stringify(res, null, 2));
+			if (res.hits.total <= 0)
+				return reject(new Error('No cache found'));
+			var price = res.hits.hits[0]._source.price;
+			if (typeof price === 'object')
+				return resolve(price);
+			return resolve({adult: price });
+		});
+	})
+	.catch(function (err) {
+		return Promise.reject(err);
+	});
+}
+
 function get(mode) {
 	this.setMode(mode);
 	if (typeof this.scrape === 'function') {

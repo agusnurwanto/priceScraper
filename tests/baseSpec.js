@@ -139,7 +139,30 @@ describe('base class', function () {
 			expect(query).to.contain('sub');
 			next();
  		});
- 	});
+ 	}); 	
+	describe('getCache', function () {
+		this.timeout(10000)
+		it('should get cache price from db based on dt', function (next) {
+			var options = {
+				dt     : {
+					ori: 'jog', 
+					dst: 'pnk',
+					flightCode: 'abc',
+					classCode: 'xx',
+				},
+				airline: 'lion'
+			};
+			var base = new Base(options);
+			base.getCache()
+				.then(function (res) {
+					expect(res.adult).to.gt(0);
+					next();
+				})
+				.catch(function (err) {
+					next(err);
+				});
+ 		});
+ 	}); 	
 	/*describe('Subsuite', function () {
 		it('should extend parent to child method', function (next) {
 			next();
