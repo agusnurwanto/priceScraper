@@ -225,6 +225,7 @@ function get(mode) {
 	} else {
 		var query = this.prepareRequestQuery();
 		var url = this.scrape + '?' + query;
+		console.log(url);
 		return scraper.get(url);
 	}
 }

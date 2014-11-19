@@ -6,7 +6,7 @@ var lionPrototype = {
 			.then(function (results) {
 				// console.log(results);
 				var bodies = results.map(function (res) {
-					console.log(res);
+					console.log(res.body);
 					return JSON.parse(res.body)[0].price;
 				})
 				// console.log(bodies,'bodies');
