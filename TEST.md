@@ -1,3 +1,4 @@
+got results getAll
 # TOC
    - [base class](#base-class)
      - [init](#base-class-init)
@@ -11,6 +12,8 @@
      - [saveCache](#base-class-savecache)
      - [generateId](#base-class-generateid)
      - [get](#base-class-get)
+     - [calculatePrices](#base-class-calculateprices)
+     - [run](#base-class-run)
      - [isCacheComplete](#base-class-iscachecomplete)
 <a name=""></a>
  
@@ -335,6 +338,108 @@ base.get(100)
 	})
 	.catch(function (err) {
 		next(err);
+	})
+```
+
+<a name="base-class-calculateprices"></a>
+## calculatePrices
+should return prices formatted from results.
+
+```js
+var childPrototype = {
+	calculateAdult: function (results) {
+		var _100 = results[0];
+		return _100.total
+	},
+	calculateChild: function (results) {
+		var _100 = results[0];
+		var _110 = results[1];
+		return _110.total - _100.total;
+	},
+	calculateInfant: function (results) {
+		var _100 = results[0];
+		var _101 = results[2];
+		return _101.total - _100.total;
+	},
+	calculateBasic: function (results) {
+		var _100 = results[0];
+		return _100.basic
+	},
+}
+var ChildBase = Base.extend(childPrototype);
+var child = new ChildBase;
+var results = [ { basic: 2616000, tax: 266600, total: 2882600 },
+	{ basic: 4578000, tax: 467800, total: 5045800 },
+	{ basic: 2878000, tax: 297800, total: 3175800 } ];
+var prices = child.calculatePrices(results);
+expect(prices.adult).to.exist;
+expect(prices.child).to.exist;
+expect(prices.infant).to.exist;
+expect(prices.basic).to.exist;
+next();
+```
+
+<a name="base-class-run"></a>
+## run
+should get prices.
+
+```js
+var options = {
+	scrape: 'http://pluto.dev/0/price/garuda',
+	dt: {
+		user     : 'IANTONI.JKTGI229T',
+		dep_date : '27 10 2014',
+		ori      : 'cgk',
+		dst      : 'jog',
+		dep_radio: 'c1',
+		ret_radio: 'c1',
+	},
+	airline: 'garuda'
+}
+var childPrototype = {
+	getAll: function () {
+		return this._super()
+			.then(function (results) {
+				var bodies = results.map(function (res) {
+					return JSON.parse(res.body).body;
+				})
+				return Promise.resolve(bodies);
+			})
+			.catch(function (err) {
+				return next(err);
+			})
+	},
+	calculateAdult: function (results) {
+		var _100 = results[0];
+		return _100.total
+	},
+	calculateChild: function (results) {
+		var _100 = results[0];
+		var _110 = results[1];
+		return _110.total - _100.total;
+	},
+	calculateInfant: function (results) {
+		var _100 = results[0];
+		var _101 = results[2];
+		return _101.total - _100.total;
+	},
+	calculateBasic: function (results) {
+		var _100 = results[0];
+		return _100.basic
+	},
+}
+var ChildBase = Base.extend(childPrototype);
+var child = new ChildBase(options);
+child.run()
+	.then(function (prices) {
+		expect(prices.adult).to.exist;
+		expect(prices.child).to.exist;
+		expect(prices.infant).to.exist;
+		expect(prices.basic).to.exist;
+		next();
+	})
+	.catch(function (err) {
+		return next(err);
 	})
 ```
 

@@ -17,7 +17,9 @@ var priceScraperPrototype = {
 	saveCache           : saveCache,
 	generateId          : generateId,
 	get                 : get,
+	getAll              : getAll,
 	isCacheComplete     : isCacheComplete,
+	calculatePrices     : calculatePrices,
 	run                 : run,
 }
 _.mixin(require('underscore.deep'));
@@ -192,19 +194,54 @@ function get(mode) {
 		return scraper.get(url);
 	}
 }
+/**
+ * get scrape data all modes
+ * @return {Object} Array of object containing data price
+ */
+function getAll () {
+	var _this = this;
+	var modes = ['100', '110', '101'];
+	var steps = [];
+	modes.forEach(function (mode) {
+		var step = _this.get(mode)
+		steps.push(step);
+	});
+	return Promise.all(steps);
+}
+/**
+ * return formatted prices from results
+ * @param  {object} results Results from getAll
+ * @return {Object}         Formatted prices to be outputted
+ */
+function calculatePrices (results) {
+	var prices = {
+		adult : this.calculateAdult(results),
+		child : this.calculateChild(results),
+		infant: this.calculateInfant(results),
+		basic : this.calculateBasic(results),
+	};
+	return prices;
+}
 function run () {
 	var _this = this;
 	return new Promise(function (resolve, reject) {
 		_this.getCache()
 			.then(function (cache) {
-				if (!_this.isCacheComplete(cache))
-					return resolve(cache);
-				return reject();
+				console.log(cache);
+				if (_this.isCacheComplete(cache))
+					return reject();
+				return resolve(cache);
 			})
 			.catch(function () {
-				var prices = {};
-				if (!(err instanceof Error))
-					prices = err;
+				return _this.getAll()
+			})
+			.then(function (results) {
+				console.log('got results getAll');
+				var prices = _this.calculatePrices(results);
+				return resolve(prices);
+			})
+			.catch(function (err) {
+				throw err;
 			})
 	})
 }

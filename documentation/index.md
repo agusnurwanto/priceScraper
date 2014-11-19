@@ -88,6 +88,24 @@ get price by scraping it as defined in scrape option
 **Returns**: `Object`, Object Promise
 
 
+### getAll() 
+
+get scrape data all modes
+
+**Returns**: `Object`, Array of object containing data price
+
+
+### calculatePrices(results) 
+
+return formatted prices from results
+
+**Parameters**
+
+**results**: `object`, Results from getAll
+
+**Returns**: `Object`, Formatted prices to be outputted
+
+
 ### generateId(data) 
 
 internal function used when saving data to db
