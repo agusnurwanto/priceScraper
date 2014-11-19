@@ -3,14 +3,14 @@ var citilink = require('./modules/citilink');
 var airasia = require('./modules/airasia');
 var express = require('./modules/express');
 // var sriwijaya = require('./modules/sriwijaya');
-// var lion = require('./modules/lion');
+var lion = require('./modules/lion');
 var scrapers = {
 	garuda: garuda,
 	citilink: citilink,
 	airasia: airasia,
 	express: express,
 	// sriwijaya: sriwijaya,
-	// lion: lion,
+	lion: lion,
 }
 
 module.exports = scrapers;
