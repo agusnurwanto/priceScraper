@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "cd tests && DEBUG=*-mocha mocha *Spec.js -R spec",
-		"docs": "jsdox --output documentation index.js",
+		"docs": "jsdox --output documentation *.js",
 		"testdocs": "cd tests && mocha *Spec.js -R markdown > ../TEST.md"
 	},
 	"repository": {

@@ -20,7 +20,7 @@ describe('Garuda', function () {
 			var urlAirbinder = 'http://128.199.251.75:9098/price';
 			var urlPluto = 'http://pluto.dev/0/price/garuda';
 			var options = {
-				scrape: urlPluto,
+				scrape: urlAirbinder,
 				dt: dt,
 				airline: 'garuda'
 			};

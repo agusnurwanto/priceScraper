@@ -1,6 +1,6 @@
-var baseClass             = require('./base');
-var scraper               = new (require('./scraper'));
-var db                    = require('./db');
+var baseClass             = require('./libs/base');
+var scraper               = new (require('./libs/scraper'));
+var db                    = require('./libs/db');
 var _                     = require('underscore');
 var Promise               = require('promise');
 var querystring           = require('querystring');
@@ -20,6 +20,7 @@ var priceScraperPrototype = {
 	generateId               : generateId,
 	get                      : get,
 	getAll                   : getAll,
+	getAllParallel           : getAllParallel,
 	isCacheComplete          : isCacheComplete,
 	calculatePrices          : calculatePrices,
 	run                      : run,
@@ -47,7 +48,8 @@ function setOptions() {
 			dt: {ori: '', dst: '', flightCode: '', classCode: '' },
 			airline: '',
 			index: 'pluto',
-			type: 'price'
+			type: 'price',
+			parallel: false
 		}
 		var options = _.deepExtend(defaults, args);
 		for (var key in defaults) {
@@ -222,7 +224,7 @@ function get(mode) {
  */
 function getAll () {
 	if(!!this.parallel)
-		return this.getAllParallel;
+		return this.getAllParallel();
 	var _this = this;
 	var results = [];
 	var modes = ['100', '110', '101'];

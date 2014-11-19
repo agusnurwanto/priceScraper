@@ -277,7 +277,8 @@ describe('base class', function () {
 					dep_radio: 'c1',
 					ret_radio: 'c1',
 				},
-				airline: 'garuda'
+				airline: 'garuda',
+				parallel: true
 			}
 			var base = new Base(options);
 			base.get(100)
@@ -337,7 +338,6 @@ describe('base class', function () {
 					var bodies = results.map(function (res) {
 						return JSON.parse(res.body).body;
 					})
-					console.log(bodies);
 					expect(bodies.length).to.eq(3);
 					expect(bodies[0]).to.exist;
 					next();
@@ -435,6 +435,7 @@ describe('base class', function () {
 			var child = new ChildBase(options);
 			child.run()
 				.then(function (prices) {
+					// console.log('child.parallel',child.parallel);
 					expect(prices.adult).to.exist;
 					expect(prices.child).to.exist;
 					expect(prices.infant).to.exist;
