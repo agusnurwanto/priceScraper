@@ -1,6 +1,6 @@
-var Base = require('../priceScraper');
+var Base = require('../base');
 var Promise = require('promise');
-var citilinkPrototype = {
+var airasiaPrototype = {
 	getAll: function () {
 		return this._super()
 			.then(function (results) {
@@ -17,22 +17,22 @@ var citilinkPrototype = {
 	},
 	calculateAdult: function (results) {
 		var _100 = results[0];
-		return +_100.total;
+		return +_100.totalIDR;
 	},
 	calculateChild: function (results) {
 		var _100 = results[0];
 		var _110 = results[1];
-		return _110.total - _100.total;
+		return _110.totalIDR - _100.totalIDR;
 	},
 	calculateInfant: function (results) {
 		var _100 = results[0];
 		var _101 = results[2];
-		return _101.total - _100.total;
+		return _101.totalIDR - _100.totalIDR;
 	},
 	calculateBasic: function (results) {
 		var _100 = results[0];
-		return +_100.dep_price.adult_basic.satuan;
+		return +_100.depart.fare.adults.replace('1 x ', '');
 	}
 };
-var Citilink = Base.extend(citilinkPrototype);
-module.exports = Citilink;
+var Garuda = Base.extend(airasiaPrototype);
+module.exports = Garuda;

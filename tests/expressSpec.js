@@ -1,5 +1,6 @@
 var expect = require('chai').expect;
-var Express = require('../express');
+var Scrapers = require('../index');
+var Express = Scrapers.express;
 describe('Express', function () {
 	this.timeout(30000);
 	describe('run', function () {

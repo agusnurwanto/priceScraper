@@ -1,5 +1,6 @@
 var expect = require('chai').expect;
-var Airasia = require('../airasia');
+var Scrapers = require('../index');
+var Airasia = Scrapers.airasia;
 describe('Airasia', function () {
 	this.timeout(30000);
 	describe('run', function () {

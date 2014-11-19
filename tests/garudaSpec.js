@@ -1,5 +1,6 @@
 var expect = require('chai').expect;
-var Garuda = require('../garuda');
+var Scrapers = require('../index');
+var Garuda = Scrapers.garuda;
 describe('Garuda', function () {
 	this.timeout(60000);
 	describe('run', function () {

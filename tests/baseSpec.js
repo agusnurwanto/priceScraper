@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
 var Promise = require('promise');
-var Base   = require('../../priceScraper');
+var Base   = require('../base');
 describe('base class', function () {
 	this.timeout(3000)
 	describe('init', function () {

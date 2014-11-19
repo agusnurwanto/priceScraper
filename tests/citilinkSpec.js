@@ -1,5 +1,6 @@
 var expect = require('chai').expect;
-var Citilink = require('../citilink');
+var Scrapers = require('../index');
+var Citilink = Scrapers.citilink;
 describe('Citilink', function () {
 	this.timeout(30000);
 	describe('run', function () {
