@@ -149,7 +149,15 @@ function getCache () {
 	var _this = this;
 	return new Promise(function (resolve, reject) {
 		var query = _this.prepareDatabaseQuery();
-		_this.db.search(_this.index, _this.type, query, function (err, res) {
+		var data = {
+			origin     : _this.dt.ori,
+			destination: _this.dt.dst,
+			airline    : _this.airline,
+			flight     : _this.dt.flightCode || '',
+			class      : _this.dt.classCode || '',
+		};
+		var id = _this.generateId(data);
+		_this.db.get(_this.index, _this.type, id, function (err, res) {
 			if (err)
 				return reject(err)
 			try {res = JSON.parse(res)} catch(err) { return reject(err)}
@@ -310,7 +318,8 @@ function run () {
  * @return {string}      id for db
  */
 function generateId (data) {
-	return data.origin + data.destination + data.airline + data.flight + data.class;
+	var id = data.origin + data.destination + data.airline + data.flight + data.class;
+	return id.toLowerCase();
 };
 /**
  * check if cache qualified as complete
