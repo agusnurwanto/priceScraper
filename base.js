@@ -283,13 +283,13 @@ function run () {
 		}
 		_this.getCache()
 			.then(function (cache) {
-				// console.log(cache);
+				console.log(;cache found', cache);
 				if (_this.isCacheComplete(cache))
 					return reject();
 				return resolve(cache);
 			})
 			.catch(function () {
-				// console.log('no cache');
+				console.log('no cache');
 				return _this.getAll()
 			})
 			.then(function (results) {
