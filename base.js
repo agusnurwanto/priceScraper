@@ -200,7 +200,7 @@ function saveCache (prices, callback) {
 	data.id = _this.generateId(data);
 	// console.log(data);
 	db.index(_this.index, _this.type, data, function (err, res) {
-		// console.log(res);
+		console.log('savecache', res, data);
 		return callback(err, res)
 	});
 }
@@ -277,8 +277,10 @@ function calculatePrices (results) {
 function run () {
 	var _this = this;
 	return new Promise(function (resolve, reject) {
-		if(!!_this.dt.priceScraper)
+		if(!!_this.dt.priceScraper){
+			console.log('_this.dt.priceScraper');
 			return resolve(true);
+		}
 		_this.getCache()
 			.then(function (cache) {
 				// console.log(cache);
