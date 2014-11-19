@@ -291,7 +291,7 @@ function run () {
 				return _this.getAll()
 			})
 			.then(function (results) {
-				// console.log('got results getAll');
+				console.log('got results getAll', results);
 				var prices = _this.calculatePrices(results);
 				_this.saveCache(prices);
 				return resolve(prices);
