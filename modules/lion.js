@@ -10,20 +10,19 @@ var lionPrototype = {
 				// console.log(results);
 				var bodies = results.map(function (res) {
 					console.log(res.body);
-					var prices = JSON.parse(res.body)[0].price;
-					var _prices = []
-					_.each(prices, function (value, key, object) {
-						var price = {}
-						_.each(value, function (_value, _key, _object) {
-							 var num = numeral().unformat(_value);
-							 price[_key] = num;
-						})
-						_prices[key] = price;
-					})
-					return _prices;
+					return JSON.parse(res.body)[0].price;
 				})
 				// console.log(bodies,'bodies');
-				return Promise.resolve(bodies);
+				var _prices = []
+				_.each(bodies, function (value, key, object) {
+					var price = {}
+					_.each(value, function (_value, _key, _object) {
+						 var num = numeral().unformat(_value);
+						 price[_key] = num;
+					})
+					_prices[key] = price;
+				})
+				return Promise.resolve(_prices);
 			})
 			.catch(function (err) {
 				return Promise.reject(err);
