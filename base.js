@@ -92,6 +92,7 @@ function setMode(mode) {
 function prepareRequestData () {
 	var _dt  = {}
 	var dt   = _.deepExtend(this.dt, _dt)
+	dt.priceScraper = true;
 	var data = {airline: this.airline, action: this.type, query: dt }
 	return data;
 }
@@ -102,6 +103,7 @@ function prepareRequestData () {
 function prepareRequestQuery () {
 	var _dt  = {}
 	var dt   = _.deepExtend(this.dt, _dt)
+	dt.priceScraper = true;
 	var query = querystring.stringify(dt);
 	query = query.replace(/%2B/g, '+');
 	return query;
@@ -275,6 +277,8 @@ function calculatePrices (results) {
 function run () {
 	var _this = this;
 	return new Promise(function (resolve, reject) {
+		if(!!_this.dt.priceScraper)
+			return resolve(true);
 		_this.getCache()
 			.then(function (cache) {
 				// console.log(cache);
