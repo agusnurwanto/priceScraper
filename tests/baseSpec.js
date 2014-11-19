@@ -179,6 +179,13 @@ describe('base class', function () {
 			next();
  		});
  	});
+	describe('preparePricesOutputFromDB', function () {
+		it('should prepare prices output from db', function (next) {
+			var base = new Base();
+			var prices = ''
+			next();
+ 		});
+ 	});
 	describe('getCache', function () {
 		this.timeout(10000);
 		it('should get cache price from db based on dt', function (next) {
@@ -200,6 +207,13 @@ describe('base class', function () {
 				.catch(function (err) {
 					next(err);
 				});
+ 		});
+ 	});
+	describe('preparePricesInputToDB', function () {
+		it('should prepare prices output from db', function (next) {
+			var base = new Base();
+			var prices = ''
+			next();
  		});
  	});
 	describe('saveCache', function () {
@@ -224,6 +238,7 @@ describe('base class', function () {
 			base.saveCache(price, function (err, res) {
 				if (err)
 					return next(err);
+				// console.log(res);
 				try{res = JSON.parse(res); } catch(err){return next(err)}
 				expect(res.created).to.exist;
 				expect(res._index).to.eq(base.index);

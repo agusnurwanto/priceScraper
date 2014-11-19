@@ -6,21 +6,23 @@ var Promise               = require('promise');
 var querystring           = require('querystring');
 var airlines              = {"airasia": 1, "citilink": 2, "garuda": 3, "lion": 4, "sriwijaya": 5, "xpress": 6};
 var priceScraperPrototype = {
-	init                : init,
-	setOption           : setOption,
-	setOptions          : setOptions,
-	setMode             : setMode,
-	prepareRequestData  : prepareRequestData,
-	prepareRequestQuery : prepareRequestQuery,
-	prepareDatabaseQuery: prepareDatabaseQuery,
-	getCache            : getCache,
-	saveCache           : saveCache,
-	generateId          : generateId,
-	get                 : get,
-	getAll              : getAll,
-	isCacheComplete     : isCacheComplete,
-	calculatePrices     : calculatePrices,
-	run                 : run,
+	init                     : init,
+	setOption                : setOption,
+	setOptions               : setOptions,
+	setMode                  : setMode,
+	prepareRequestData       : prepareRequestData,
+	prepareRequestQuery      : prepareRequestQuery,
+	prepareDatabaseQuery     : prepareDatabaseQuery,
+	preparePricesOutputFromDB: preparePricesOutputFromDB,
+	getCache                 : getCache,
+	preparePricesInputToDB   : preparePricesInputToDB,
+	saveCache                : saveCache,
+	generateId               : generateId,
+	get                      : get,
+	getAll                   : getAll,
+	isCacheComplete          : isCacheComplete,
+	calculatePrices          : calculatePrices,
+	run                      : run,
 }
 _.mixin(require('underscore.deep'));
 var priceScraper = baseClass.extend(priceScraperPrototype);
@@ -99,6 +101,7 @@ function prepareRequestQuery () {
 	var _dt  = {}
 	var dt   = _.deepExtend(this.dt, _dt)
 	var query = querystring.stringify(dt);
+	query = query.replace(/%2B/g, '+');
 	return query;
 }
 /**
@@ -107,8 +110,8 @@ function prepareRequestQuery () {
  */
 function prepareDatabaseQuery () {
 	var _this       = this;
-	var _ori        = _this.dt.ori.toUpperCase();
-	var _dst        = _this.dt.dst.toUpperCase();
+	var _ori        = _this.dt.ori.toLowerCase();
+	var _dst        = _this.dt.dst.toLowerCase();
 	var _flightCode = _this.dt.flightCode;
 	var _classCode  = _this.dt.classCode;
 	var _airline    = _this.airline;
@@ -126,6 +129,14 @@ function prepareDatabaseQuery () {
 		query.query.filtered.filter.and.push({"term": {"transit3": _this.dt.transit3}});
 	return query;
 }
+function preparePricesOutputFromDB (prices) {
+	var _this = this;
+	return _.object(
+		_.map(prices, function (value, key, object) {
+			return [key, value - _this.priceCode];
+		})
+	);
+}
 /**
  * Get cache data from db
  * @return {Object} Data price for current dt
@@ -142,18 +153,28 @@ function getCache () {
 			if (res.hits.total <= 0)
 				return reject(new Error('No cache found'));
 			var prices = res.hits.hits[0]._source.prices;
+			// console.log(JSON.stringify(res));
 			if (!!prices && typeof prices === 'object')
 				return resolve(prices);
 			prices = {};
 			var price = res.hits.hits[0]._source.price;
 			if(!!price)
 				prices.adult = price
+			prices = _this.preparePricesOutputFromDB(prices);
 			return resolve(prices);
 		});
 	})
 	.catch(function (err) {
 		return Promise.reject(err);
 	});
+}
+function preparePricesInputToDB (prices) {
+	var _this = this;
+	return _.object(
+		_.map(prices, function (value, key, object) {
+			return [key, value + _this.priceCode];
+		})
+	);
 }
 /**
  * save price data to db
@@ -162,19 +183,20 @@ function getCache () {
 function saveCache (prices, callback) {
 	callback = (typeof callback === 'function') ? callback : function() {};
 	var _this = this;
-	var _prices = _.map(prices, function (value, key, object) {
-		return value + _this.priceCode;
-	});
+	var _prices = _this.preparePricesInputToDB(prices);
 	var data = {
 		origin     : _this.dt.ori,
 		destination: _this.dt.dst,
 		airline    : _this.airline,
 		flight     : _this.dt.flightCode || '',
 		class      : _this.dt.classCode || '',
-		prices     : _prices
+		prices     : _prices,
+		price      : _prices.adult
 	};
 	data.id = _this.generateId(data);
+	// console.log(data);
 	db.index(_this.index, _this.type, data, function (err, res) {
+		console.log(res);
 		return callback(err, res)
 	});
 }
@@ -195,10 +217,34 @@ function get(mode) {
 	}
 }
 /**
- * get scrape data all modes
+ * get scrape data all modes sequence
  * @return {Object} Array of object containing data price
  */
 function getAll () {
+	var _this = this;
+	var results = [];
+	var modes = ['100', '110', '101'];
+	var steps = modes.reduce(function (sequence, mode) {
+		return sequence.then(function () {
+			return _this.get(mode)
+				.then(function (res) {
+					results.push(res);
+				})
+		});
+	}, Promise.resolve());
+	return new Promise(function (resolve, reject) {
+		steps
+			.then(function () {
+				// console.log(results,'results');
+				return resolve(results);
+			})
+	})
+}
+/**
+ * get scrape data all modes paraller
+ * @return {Object} Array of object containing data price
+ */
+function getAllParallel () {
 	var _this = this;
 	var modes = ['100', '110', '101'];
 	var steps = [];
@@ -233,15 +279,18 @@ function run () {
 				return resolve(cache);
 			})
 			.catch(function () {
+				console.log('no cache');
 				return _this.getAll()
 			})
 			.then(function (results) {
-				console.log('got results getAll');
+				// console.log('got results getAll');
 				var prices = _this.calculatePrices(results);
+				_this.saveCache(prices);
 				return resolve(prices);
 			})
 			.catch(function (err) {
-				throw err;
+				console.log(err.stack);
+				return reject(err);
 			})
 	})
 }
