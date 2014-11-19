@@ -162,14 +162,14 @@ function getCache () {
 				return reject(err)
 			try {res = JSON.parse(res)} catch(err) { return reject(err)}
 			// console.log(JSON.stringify(res, null, 2));
-			if (res.hits.total <= 0)
-				return reject(new Error('No cache found'));
-			var prices = res.hits.hits[0]._source.prices;
+			// if (res.hits.total <= 0)
+			// 	return reject(new Error('No cache found'));
+			var prices = res._source.prices;
 			// console.log(JSON.stringify(res));
 			if (!!prices && typeof prices === 'object')
 				return resolve(prices);
 			prices = {};
-			var price = res.hits.hits[0]._source.price;
+			var price = res._source.price;
 			if(!!price)
 				prices.adult = price
 			prices = _this.preparePricesOutputFromDB(prices);
