@@ -162,8 +162,8 @@ function getCache () {
 				return reject(err)
 			try {res = JSON.parse(res)} catch(err) { return reject(err)}
 			// console.log(JSON.stringify(res, null, 2));
-			// if (res.hits.total <= 0)
-			// 	return reject(new Error('No cache found'));
+			if (!res.found)
+				return reject(new Error('No cache found'));
 			var prices = res._source.prices;
 			// console.log(JSON.stringify(res));
 			if (!!prices && typeof prices === 'object')
