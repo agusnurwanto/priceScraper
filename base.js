@@ -283,7 +283,7 @@ function run () {
 		}
 		_this.getCache()
 			.then(function (cache) {
-				console.log(;cache found', cache);
+				console.log('cache found', cache);
 				if (_this.isCacheComplete(cache))
 					return reject();
 				return resolve(cache);
