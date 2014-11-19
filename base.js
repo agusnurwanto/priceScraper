@@ -193,6 +193,10 @@ function preparePricesInputToDB (prices) {
  * @param  {Object} price object containing price data
  */
 function saveCache (prices, callback) {
+	if (!this.isCacheComplete(prices)) {
+		console.log('Not saved. Requirements not met.', prices);
+		return false;
+	}
 	callback = (typeof callback === 'function') ? callback : function() {};
 	var _this = this;
 	var _prices = _this.preparePricesInputToDB(prices);
@@ -225,7 +229,7 @@ function get(mode) {
 	} else {
 		var query = this.prepareRequestQuery();
 		var url = this.scrape + '?' + query;
-		console.log(url);
+		// console.log(url);
 		return scraper.get(url);
 	}
 }
@@ -287,7 +291,6 @@ function run () {
 	var _this = this;
 	return new Promise(function (resolve, reject) {
 		if(!!_this.dt.priceScraper){
-			console.log('_this.dt.priceScraper');
 			return resolve(true);
 		}
 		_this.getCache()
@@ -296,20 +299,19 @@ function run () {
 				if (_this.isCacheComplete(cache))
 					return reject();
 				return resolve(cache);
-			})
-			.catch(function () {
+			}, function (err) {
 				console.log('no cache');
 				return _this.getAll()
-			})
-			.then(function (results) {
-				console.log('got results getAll', results);
-				var prices = _this.calculatePrices(results);
-				_this.saveCache(prices);
-				return resolve(prices);
-			})
-			.catch(function (err) {
-				// console.log(err.stack);
-				return reject(err);
+					.then(function (results) {
+						console.log('got results getAll', results);
+						var prices = _this.calculatePrices(results);
+						_this.saveCache(prices);
+						return resolve(prices);
+					})
+					.catch(function (err) {
+						// console.log(err.stack);
+						return reject(err);
+					})
 			})
 	})
 }
@@ -320,6 +322,7 @@ function run () {
  */
 function generateId (data) {
 	var id = data.origin + data.destination + data.airline + data.flight + data.class;
+	// console.log(id);
 	return id.toLowerCase();
 };
 /**
