@@ -1,6 +1,10 @@
 var Base = require('../priceScraper');
 var Promise = require('promise');
 var garudaPrototype = {
+	init: function (args) {
+		this._super(args);
+		this.paraller = true;
+	},
 	getAll: function () {
 		return this._super()
 			.then(function (results) {

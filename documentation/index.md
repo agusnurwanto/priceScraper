@@ -90,7 +90,14 @@ get price by scraping it as defined in scrape option
 
 ### getAll() 
 
-get scrape data all modes
+get scrape data all modes sequence
+
+**Returns**: `Object`, Array of object containing data price
+
+
+### getAllParallel() 
+
+get scrape data all modes paraller
 
 **Returns**: `Object`, Array of object containing data price
 

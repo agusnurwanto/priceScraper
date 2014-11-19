@@ -1,5 +1,6 @@
-got results getAll
 # TOC
+   - [Airasia](#airasia)
+     - [run](#airasia-run)
    - [base class](#base-class)
      - [init](#base-class-init)
      - [setOptions](#base-class-setoptions)
@@ -8,15 +9,28 @@ got results getAll
      - [prepareRequestData](#base-class-preparerequestdata)
      - [prepareRequestQuery](#base-class-preparerequestquery)
      - [prepareDatabaseQuery](#base-class-preparedatabasequery)
+     - [preparePricesOutputFromDB](#base-class-preparepricesoutputfromdb)
      - [getCache](#base-class-getcache)
+     - [preparePricesInputToDB](#base-class-preparepricesinputtodb)
      - [saveCache](#base-class-savecache)
      - [generateId](#base-class-generateid)
      - [get](#base-class-get)
+     - [getAll](#base-class-getall)
      - [calculatePrices](#base-class-calculateprices)
      - [run](#base-class-run)
      - [isCacheComplete](#base-class-iscachecomplete)
+   - [Citilink](#citilink)
+     - [run](#citilink-run)
+   - [Express](#express)
+     - [run](#express-run)
+   - [Garuda](#garuda)
+     - [run](#garuda-run)
 <a name=""></a>
- 
+
+<a name="airasia"></a>
+# Airasia
+<a name="airasia-run"></a>
+## run
 <a name="base-class"></a>
 # base class
 <a name="base-class-init"></a>
@@ -237,6 +251,16 @@ expect(query.query.filtered.filter.and.length).to.eq(8);
 next();
 ```
 
+<a name="base-class-preparepricesoutputfromdb"></a>
+## preparePricesOutputFromDB
+should prepare prices output from db.
+
+```js
+var base = new Base();
+var prices = ''
+next();
+```
+
 <a name="base-class-getcache"></a>
 ## getCache
 should get cache price from db based on dt.
@@ -260,6 +284,16 @@ base.getCache()
 	.catch(function (err) {
 		next(err);
 	});
+```
+
+<a name="base-class-preparepricesinputtodb"></a>
+## preparePricesInputToDB
+should prepare prices output from db.
+
+```js
+var base = new Base();
+var prices = ''
+next();
 ```
 
 <a name="base-class-savecache"></a>
@@ -286,6 +320,7 @@ var price = {
 base.saveCache(price, function (err, res) {
 	if (err)
 		return next(err);
+	// console.log(res);
 	try{res = JSON.parse(res); } catch(err){return next(err)}
 	expect(res.created).to.exist;
 	expect(res._index).to.eq(base.index);
@@ -341,6 +376,8 @@ base.get(100)
 	})
 ```
 
+<a name="base-class-getall"></a>
+## getAll
 <a name="base-class-calculateprices"></a>
 ## calculatePrices
 should return prices formatted from results.
@@ -381,68 +418,6 @@ next();
 
 <a name="base-class-run"></a>
 ## run
-should get prices.
-
-```js
-var options = {
-	scrape: 'http://pluto.dev/0/price/garuda',
-	dt: {
-		user     : 'IANTONI.JKTGI229T',
-		dep_date : '27 10 2014',
-		ori      : 'cgk',
-		dst      : 'jog',
-		dep_radio: 'c1',
-		ret_radio: 'c1',
-	},
-	airline: 'garuda'
-}
-var childPrototype = {
-	getAll: function () {
-		return this._super()
-			.then(function (results) {
-				var bodies = results.map(function (res) {
-					return JSON.parse(res.body).body;
-				})
-				return Promise.resolve(bodies);
-			})
-			.catch(function (err) {
-				return next(err);
-			})
-	},
-	calculateAdult: function (results) {
-		var _100 = results[0];
-		return _100.total
-	},
-	calculateChild: function (results) {
-		var _100 = results[0];
-		var _110 = results[1];
-		return _110.total - _100.total;
-	},
-	calculateInfant: function (results) {
-		var _100 = results[0];
-		var _101 = results[2];
-		return _101.total - _100.total;
-	},
-	calculateBasic: function (results) {
-		var _100 = results[0];
-		return _100.basic
-	},
-}
-var ChildBase = Base.extend(childPrototype);
-var child = new ChildBase(options);
-child.run()
-	.then(function (prices) {
-		expect(prices.adult).to.exist;
-		expect(prices.child).to.exist;
-		expect(prices.infant).to.exist;
-		expect(prices.basic).to.exist;
-		next();
-	})
-	.catch(function (err) {
-		return next(err);
-	})
-```
-
 <a name="base-class-iscachecomplete"></a>
 ## isCacheComplete
 should false if cache incomplete.
@@ -463,5 +438,134 @@ var base = new Base();
 var success = base.isCacheComplete(cache);
 expect(success).to.ok;
 next();
+```
+
+<a name="citilink"></a>
+# Citilink
+<a name="citilink-run"></a>
+## run
+should check db and then scrape and then save .
+
+```js
+var dt = {
+	rute       : 'OW',
+	ori        : 'SUB',
+	dst        : 'CGK',
+	adult      : '1',
+	child      : '0',
+	infant     : '0',
+	dep_date   : '27+11+2014',
+	id_maskapai: '9',
+	user       : 'mitrabook',
+	rute       : 'OW',
+	dep_radio  : '1Fare6',
+	_          : '1416361230832',
+}
+var urlAirbinder = 'http://128.199.251.75:4/price';
+var urlPluto = 'http://pluto.dev/0/price/citilink';
+var options = {
+	scrape: urlAirbinder,
+	dt: dt,
+	airline: 'citilink'
+};
+var citilink = new Citilink(options);
+citilink.run()
+	.then(function (prices) {
+		console.log(prices);
+		expect(prices.adult).to.exist;
+		expect(prices.child).to.exist;
+		expect(prices.infant).to.exist;
+		expect(prices.basic).to.exist;
+		next();
+	})
+	.catch(function (err) {
+		return next(err);
+	});
+```
+
+<a name="express"></a>
+# Express
+<a name="express-run"></a>
+## run
+should check db and then scrape and then save .
+
+```js
+var dt = {
+	rute       : 'OW',
+	ori        : 'JOG',
+	dst        : 'PNK',
+	adult      : '1',
+	child      : '0',
+	infant     : '0',
+	dep_date   : '30+11+2014',
+	id_maskapai: '9',
+	user       : '35054',
+	id_maskapai: '9',
+	rute       : 'OW',
+	dep_radio  : 'normal',
+	_          : '1416361230832',
+}
+var urlAirbinder = 'http://128.199.251.75:8097/price';
+var urlPluto = 'http://pluto.dev/0/price/express';
+var options = {
+	scrape: urlAirbinder,
+	dt: dt,
+	airline: 'express'
+};
+var express = new Express(options);
+express.run()
+	.then(function (prices) {
+		// console.log(prices);
+		expect(prices.adult).to.exist;
+		expect(prices.child).to.exist;
+		expect(prices.infant).to.exist;
+		expect(prices.basic).to.exist;
+		next()
+	})
+	.catch(function (err) {
+		return next(err);
+	});
+```
+
+<a name="garuda"></a>
+# Garuda
+<a name="garuda-run"></a>
+## run
+should check db and then scrape and then save .
+
+```js
+var dt = {
+	'user'     : 'IANTONI.JKTGI229T',
+	'dep_date' : '27 10 2014',
+	'ret_date' : '30 10 2014',
+	'ori'      : 'cgk',
+	'dst'      : 'jog',
+	'rute'     : 'ow',
+	'dep_radio': 'c1',
+	'ret_radio': 'c1',
+	'adult'    : '1',
+	'child'    : '0',
+	'infant'   : '0',
+}
+var urlAirbinder = 'http://128.199.251.75:9098/price';
+var urlPluto = 'http://pluto.dev/0/price/garuda';
+var options = {
+	scrape: urlPluto,
+	dt: dt,
+	airline: 'garuda'
+};
+var garuda = new Garuda(options);
+garuda.run()
+	.then(function (prices) {
+		// console.log(prices);
+		expect(prices.adult).to.exist;
+		expect(prices.child).to.exist;
+		expect(prices.infant).to.exist;
+		expect(prices.basic).to.exist;
+		next();
+	})
+	.catch(function (err) {
+		return next(err);
+	});
 ```
 

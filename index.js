@@ -196,7 +196,7 @@ function saveCache (prices, callback) {
 	data.id = _this.generateId(data);
 	// console.log(data);
 	db.index(_this.index, _this.type, data, function (err, res) {
-		console.log(res);
+		// console.log(res);
 		return callback(err, res)
 	});
 }
@@ -221,6 +221,8 @@ function get(mode) {
  * @return {Object} Array of object containing data price
  */
 function getAll () {
+	if(!!this.parallel)
+		return this.getAllParallel;
 	var _this = this;
 	var results = [];
 	var modes = ['100', '110', '101'];
@@ -273,13 +275,13 @@ function run () {
 	return new Promise(function (resolve, reject) {
 		_this.getCache()
 			.then(function (cache) {
-				console.log(cache);
+				// console.log(cache);
 				if (_this.isCacheComplete(cache))
 					return reject();
 				return resolve(cache);
 			})
 			.catch(function () {
-				console.log('no cache');
+				// console.log('no cache');
 				return _this.getAll()
 			})
 			.then(function (results) {
@@ -289,7 +291,7 @@ function run () {
 				return resolve(prices);
 			})
 			.catch(function (err) {
-				console.log(err.stack);
+				// console.log(err.stack);
 				return reject(err);
 			})
 	})

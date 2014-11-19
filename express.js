@@ -8,7 +8,7 @@ var expressPrototype = {
 				var bodies = results.map(function (res) {
 					return JSON.parse(res.body);
 				})
-				console.log(bodies,'bodies');
+				// console.log(bodies,'bodies');
 				return Promise.resolve(bodies);
 			})
 			.catch(function (err) {

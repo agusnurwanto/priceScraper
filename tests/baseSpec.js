@@ -266,7 +266,7 @@ describe('base class', function () {
 	describe('get', function () {
 		this.timeout(60000);
 		// commented to move along faster
-		/*it('should get price from scrape -- url', function (next) {
+		it('should get price from scrape -- url', function (next) {
 			var options = {
 				scrape: 'http://pluto.dev/0/price/garuda',
 				dt: {
@@ -289,7 +289,7 @@ describe('base class', function () {
 				.catch(function (err) {
 					next(err);
 				})
- 		});*/
+ 		});
 		it('should get price from scrape -- function', function (next) {
 			var scrapeFn = function (data) {
 				return Promise.resolve({
@@ -315,7 +315,7 @@ describe('base class', function () {
  		});
  	});
 	// commented to move along faster
-	/*describe('getAll', function () {
+	describe('getAll', function () {
 		this.timeout(60000);
 		it('should get price from scrape -- url', function (next) {
 			var options = {
@@ -328,7 +328,8 @@ describe('base class', function () {
 					dep_radio: 'c1',
 					ret_radio: 'c1',
 				},
-				airline: 'garuda'
+				airline: 'garuda',
+				parallel: true
 			}
 			var base = new Base(options);
 			base.getAll()
@@ -345,7 +346,7 @@ describe('base class', function () {
 					next(err);
 				})
  		});
- 	});*/
+ 	});
 	describe('calculatePrices', function () {
 		it('should return prices formatted from results', function (next) {
 			var childPrototype = {
@@ -395,7 +396,8 @@ describe('base class', function () {
 					dep_radio: 'c1',
 					ret_radio: 'c1',
 				},
-				airline: 'garuda'
+				airline: 'garuda',
+				parallel: true
 			}
 			var childPrototype = {
 				getAll: function () {
