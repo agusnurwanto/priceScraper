@@ -9,7 +9,7 @@ var garudaPrototype = {
 		return this._super()
 			.then(function (results) {
 				var bodies = results.map(function (res) {
-					return JSON.parse(res.body).body;
+					return JSON.parse(res.body);
 				})
 				// console.log(bodies,'bodies');
 				return Promise.resolve(bodies);
