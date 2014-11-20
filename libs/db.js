@@ -1,6 +1,6 @@
 var ElasticSearchClient = require('elasticsearchclient');
 var elasticSearchClient = new ElasticSearchClient({
-    host: 'localhost',
+    host: 'folbek.me',
     port: 9200
 });
 module.exports = elasticSearchClient;

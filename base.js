@@ -298,7 +298,7 @@ function run () {
 			.then(function (cache) {
 				console.log('cache found', cache);
 				if (!_this.isCacheComplete(cache))
-					return reject();
+					return reject(new Errror('Cache not complete.'));
 				return resolve(cache);
 			}, function (err) {
 				console.log('no cache');

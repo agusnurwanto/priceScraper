@@ -1,3 +1,166 @@
+no cache
+got results getAll [ { tujuan: 'Jakarta  (CGK) to Surabaya (SUB)',
+    totalIDR: '451600',
+    depart: 
+     { departKode: 'QZ 7680 ',
+       date: [Object],
+       fare: [Object],
+       addOns: [Object],
+       total: '451600 ',
+       taxesAndFees: [Object] } },
+  { tujuan: 'Jakarta  (CGK) to Surabaya (SUB)',
+    totalIDR: '903200',
+    depart: 
+     { departKode: 'QZ 7680 ',
+       date: [Object],
+       fare: [Object],
+       addOns: [Object],
+       total: '903200 ',
+       taxesAndFees: [Object] } },
+  { tujuan: 'Jakarta  (CGK) to Surabaya (SUB)',
+    totalIDR: '601600',
+    depart: 
+     { departKode: 'QZ 7680 ',
+       date: [Object],
+       fare: [Object],
+       addOns: [Object],
+       total: '601600 ',
+       taxesAndFees: [Object] } } ]
+savecache {"_index":"pluto","_type":"price","_id":"jogpnklionabcxx","_version":1,"created":true} { origin: 'jog',
+  destination: 'pnk',
+  airline: 'lion',
+  flight: 'abc',
+  class: 'xx',
+  prices: { adult: 1000004, child: 1000004, infant: 50004, basic: 1000004 },
+  price: 1000004,
+  id: 'jogpnklionabcxx' }
+no cache
+savecache {"_index":"pluto","_type":"price","_id":"cgksubairasia","_version":1,"created":true} { origin: 'CGK',
+  destination: 'SUB',
+  airline: 'airasia',
+  flight: '',
+  class: '',
+  prices: { adult: 451601, child: 451601, infant: 150001, basic: 339001 },
+  price: 451601,
+  id: 'cgksubairasia' }
+got results getAll [ { dep_price: { adult_basic: [Object], passenger_tax: [Object] },
+    total: '681700' },
+  { dep_price: 
+     { adult_basic: [Object],
+       child_basic: [Object],
+       passenger_tax: [Object] },
+    total: '1231400' },
+  { dep_price: 
+     { adult_basic: [Object],
+       infant_basic: [Object],
+       infant_tax: [Object],
+       passenger_tax: [Object] },
+    total: '906700' } ]
+{ adult: 681700, child: 549700, infant: 225000, basic: 480000 }
+no cache
+savecache {"_index":"pluto","_type":"price","_id":"subcgkcitilink","_version":1,"created":true} { origin: 'SUB',
+  destination: 'CGK',
+  airline: 'citilink',
+  flight: '',
+  class: '',
+  prices: { adult: 681702, child: 549702, infant: 225002, basic: 480002 },
+  price: 681702,
+  id: 'subcgkcitilink' }
+got results getAll [ { total: 840000,
+    departure: 
+     { date: '2014-11-30',
+       depart: '11/30/2014 9:10:00 AM',
+       arrival: '11/30/2014 10:50:00 AM',
+       adultFare: 685091,
+       totalFax: 79000,
+       totalVAT: 75909,
+       total: 840000 } },
+  { total: 1680000,
+    departure: 
+     { date: '2014-11-30',
+       depart: '11/30/2014 9:10:00 AM',
+       arrival: '11/30/2014 10:50:00 AM',
+       adultFare: 685091,
+       totalFax: 158000,
+       totalVAT: 151818,
+       total: 1680000,
+       childFare: 685091 } },
+  { total: 975000,
+    departure: 
+     { date: '2014-11-30',
+       depart: '11/30/2014 9:10:00 AM',
+       arrival: '11/30/2014 10:50:00 AM',
+       adultFare: 685091,
+       totalFax: 84000,
+       totalVAT: 87727,
+       total: 975000,
+       infantFare: 118182 } } ]
+savecache {"_index":"pluto","_type":"price","_id":"jogpnkexpress","_version":1,"created":true} { origin: 'JOG',
+  destination: 'PNK',
+  airline: 'express',
+  flight: '',
+  class: '',
+  prices: { adult: 840000, child: 840000, infant: 135000, basic: 685091 },
+  price: 840000,
+  id: 'jogpnkexpress' }
+no cache
+no cache
+got results getAll [ { basic: 2616000, tax: 266600, total: 2882600 },
+  { basic: 4578000, tax: 467800, total: 5045800 },
+  { basic: 2878000, tax: 297800, total: 3175800 } ]
+savecache {"_index":"pluto","_type":"price","_id":"cgkjoggaruda","_version":1,"created":true} { origin: 'cgk',
+  destination: 'jog',
+  airline: 'garuda',
+  flight: '',
+  class: '',
+  prices: { adult: 2882603, child: 2163203, infant: 293203, basic: 2616003 },
+  price: 2882603,
+  id: 'cgkjoggaruda' }
+[{"price":{"published_fare":"1,326,700","total_taxes":"92,000","total":"1,418,700"}}]
+[{"price":{"published_fare":"2,653,400","total_taxes":"184,000","total":"2,837,400"}}]
+[{"price":{"published_fare":"1,458,700","total_taxes":"117,000","total":"1,575,700"}}]
+got results getAll [ { published_fare: 1326700, total_taxes: 92000, total: 1418700 },
+  { published_fare: 2653400, total_taxes: 184000, total: 2837400 },
+  { published_fare: 1458700, total_taxes: 117000, total: 1575700 } ]
+{ adult: 1418700, child: 1418700, infant: 157000, basic: 1326700 }
+no cache
+savecache {"_index":"pluto","_type":"price","_id":"subcgklion","_version":1,"created":true} { origin: 'SUB',
+  destination: 'CGK',
+  airline: 'lion',
+  flight: '',
+  class: '',
+  prices: { adult: 1418704, child: 1418704, infant: 157004, basic: 1326704 },
+  price: 1418704,
+  id: 'subcgklion' }
+got results getAll [ { itenari: { oneway: [Object], ret: [Object] },
+    price: { total: '587,200', nta: '554,600' },
+    faredetail: 
+     { adult: [Object],
+       child: [Object],
+       infants: [Object],
+       toTal: '587,200IDR',
+       nta: '554,600IDR',
+       diskonAgen: '32,600IDR' } },
+  { itenari: { oneway: [Object], ret: [Object] },
+    price: { total: '1,174,400', nta: '1,109,200' },
+    faredetail: 
+     { adult: [Object],
+       child: [Object],
+       infants: [Object],
+       toTal: '1,174,400IDR',
+       nta: '1,109,200IDR',
+       diskonAgen: '65,200IDR' } },
+  { itenari: { oneway: [Object], ret: [Object] },
+    price: { total: '587,200', nta: '554,600' },
+    faredetail: 
+     { adult: [Object],
+       child: [Object],
+       infants: [Object],
+       toTal: '587,200IDR',
+       nta: '554,600IDR',
+       diskonAgen: '32,600IDR' } } ]
+Not saved. Requirements not met. { adult: 587200, child: 587200, infant: 0, basic: 452000 }
+{ adult: 587200, child: 587200, infant: 0, basic: 452000 }
 # TOC
    - [Airasia](#airasia)
      - [run](#airasia-run)
@@ -28,7 +191,7 @@
    - [Sriwijaya](#sriwijaya)
      - [run](#sriwijaya-run)
 <a name=""></a>
-
+ 
 <a name="airasia"></a>
 # Airasia
 <a name="airasia-run"></a>
@@ -305,29 +468,6 @@ next();
 
 <a name="base-class-getcache"></a>
 ## getCache
-should get cache price from db based on dt.
-
-```js
-var options = {
-	dt     : {
-		ori: 'jog',
-		dst: 'pnk',
-		flightCode: 'abc',
-		classCode: 'xx',
-	},
-	airline: 'lion'
-};
-var base = new Base(options);
-base.getCache()
-	.then(function (res) {
-		expect(res.adult).to.gt(0);
-		next();
-	})
-	.catch(function (err) {
-		next(err);
-	});
-```
-
 <a name="base-class-preparepricesinputtodb"></a>
 ## preparePricesInputToDB
 should prepare prices output from db.
@@ -579,44 +719,6 @@ express.run()
 # Garuda
 <a name="garuda-run"></a>
 ## run
-should check db and then scrape and then save .
-
-```js
-var dt = {
-	'user'     : 'IANTONI.JKTGI229T',
-	'dep_date' : '27 10 2014',
-	'ret_date' : '30 10 2014',
-	'ori'      : 'cgk',
-	'dst'      : 'jog',
-	'rute'     : 'ow',
-	'dep_radio': 'c1',
-	'ret_radio': 'c1',
-	'adult'    : '1',
-	'child'    : '0',
-	'infant'   : '0',
-}
-var urlAirbinder = 'http://128.199.251.75:9098/price';
-var urlPluto = 'http://pluto.dev/0/price/garuda';
-var options = {
-	scrape: urlAirbinder,
-	dt: dt,
-	airline: 'garuda'
-};
-var garuda = new Garuda(options);
-garuda.run()
-	.then(function (prices) {
-		// console.log(prices);
-		expect(prices.adult).to.exist;
-		expect(prices.child).to.exist;
-		expect(prices.infant).to.exist;
-		expect(prices.basic).to.exist;
-		next();
-	})
-	.catch(function (err) {
-		return next(err);
-	});
-```
-
 <a name="lion"></a>
 # Lion
 <a name="lion-run"></a>
