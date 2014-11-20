@@ -45,13 +45,12 @@ function setOptions() {
 		var args = arguments[0];
 		var defaults = {
 			scrape: '', //if url will be used as request with query, if function will be executed with dt object
-			dt: {ori: '', dst: '', flightCode: '', classCode: '' },
+			dt: {ori: '', dst: '', flightCode: '', classCode: '', priceScraper: true },
 			airline: '',
 			index: 'pluto',
 			type: 'price',
 			parallel: false,
 			db: db,
-			priceScraper: true
 		}
 		var options = _.deepExtend(defaults, args);
 		for (var key in defaults) {
