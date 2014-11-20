@@ -1,4 +1,3 @@
-{ adult: 681700, child: 549700, infant: 225000, basic: 480000 }
 # TOC
    - [Airasia](#airasia)
      - [run](#airasia-run)
@@ -16,9 +15,7 @@
      - [saveCache](#base-class-savecache)
      - [generateId](#base-class-generateid)
      - [get](#base-class-get)
-     - [getAll](#base-class-getall)
      - [calculatePrices](#base-class-calculateprices)
-     - [run](#base-class-run)
      - [isCacheComplete](#base-class-iscachecomplete)
    - [Citilink](#citilink)
      - [run](#citilink-run)
@@ -26,8 +23,12 @@
      - [run](#express-run)
    - [Garuda](#garuda)
      - [run](#garuda-run)
+   - [Lion](#lion)
+     - [run](#lion-run)
+   - [Sriwijaya](#sriwijaya)
+     - [run](#sriwijaya-run)
 <a name=""></a>
- 
+
 <a name="airasia"></a>
 # Airasia
 <a name="airasia-run"></a>
@@ -391,34 +392,6 @@ next();
 
 <a name="base-class-get"></a>
 ## get
-should get price from scrape -- url.
-
-```js
-var options = {
-	scrape: 'http://pluto.dev/0/price/garuda',
-	dt: {
-		user     : 'IANTONI.JKTGI229T',
-		dep_date : '27 10 2014',
-		ori      : 'cgk',
-		dst      : 'jog',
-		dep_radio: 'c1',
-		ret_radio: 'c1',
-	},
-	airline: 'garuda',
-	parallel: true
-}
-var base = new Base(options);
-base.get(100)
-	.then(function (res) {
-		var body = JSON.parse(res.body);
-		expect(body.body).to.exist;
-		next();
-	})
-	.catch(function (err) {
-		next(err);
-	})
-```
-
 should get price from scrape -- function.
 
 ```js
@@ -438,39 +411,6 @@ base.get(100)
 	.then(function (res) {
 		var body = res.body;
 		expect(body).to.exist;
-		next();
-	})
-	.catch(function (err) {
-		next(err);
-	})
-```
-
-<a name="base-class-getall"></a>
-## getAll
-should get price from scrape -- url.
-
-```js
-var options = {
-	scrape: 'http://pluto.dev/0/price/garuda',
-	dt: {
-		user     : 'IANTONI.JKTGI229T',
-		dep_date : '27 10 2014',
-		ori      : 'cgk',
-		dst      : 'jog',
-		dep_radio: 'c1',
-		ret_radio: 'c1',
-	},
-	airline: 'garuda',
-	parallel: true
-}
-var base = new Base(options);
-base.getAll()
-	.then(function (results) {
-		var bodies = results.map(function (res) {
-			return JSON.parse(res.body).body;
-		})
-		expect(bodies.length).to.eq(3);
-		expect(bodies[0]).to.exist;
 		next();
 	})
 	.catch(function (err) {
@@ -516,78 +456,22 @@ expect(prices.basic).to.exist;
 next();
 ```
 
-<a name="base-class-run"></a>
-## run
-should get prices.
-
-```js
-var options = {
-	scrape: 'http://pluto.dev/0/price/garuda',
-	dt: {
-		user     : 'IANTONI.JKTGI229T',
-		dep_date : '27 10 2014',
-		ori      : 'cgk',
-		dst      : 'jog',
-		dep_radio: 'c1',
-		ret_radio: 'c1',
-	},
-	airline: 'garuda',
-	parallel: true
-}
-var childPrototype = {
-	getAll: function () {
-		return this._super()
-			.then(function (results) {
-				var bodies = results.map(function (res) {
-					return JSON.parse(res.body).body;
-				})
-				return Promise.resolve(bodies);
-			})
-			.catch(function (err) {
-				return next(err);
-			})
-	},
-	calculateAdult: function (results) {
-		var _100 = results[0];
-		return _100.total
-	},
-	calculateChild: function (results) {
-		var _100 = results[0];
-		var _110 = results[1];
-		return _110.total - _100.total;
-	},
-	calculateInfant: function (results) {
-		var _100 = results[0];
-		var _101 = results[2];
-		return _101.total - _100.total;
-	},
-	calculateBasic: function (results) {
-		var _100 = results[0];
-		return _100.basic
-	},
-}
-var ChildBase = Base.extend(childPrototype);
-var child = new ChildBase(options);
-child.run()
-	.then(function (prices) {
-		// console.log('child.parallel',child.parallel);
-		expect(prices.adult).to.exist;
-		expect(prices.child).to.exist;
-		expect(prices.infant).to.exist;
-		expect(prices.basic).to.exist;
-		next();
-	})
-	.catch(function (err) {
-		return next(err);
-	})
-```
-
 <a name="base-class-iscachecomplete"></a>
 ## isCacheComplete
-should false if cache incomplete.
+should false if cache incomplete -- lack of property.
 
 ```js
 var cache = {'adult': 1000000 };
+var base = new Base();
+var success = base.isCacheComplete(cache);
+expect(success).to.not.ok;
+next();
+```
+
+should false if cache complete -- price less than 0.
+
+```js
+var cache = {'adult': 1000000, 'child': -1000000, 'infant': 1000000, 'basic': 1000000, };
 var base = new Base();
 var success = base.isCacheComplete(cache);
 expect(success).to.not.ok;
@@ -714,7 +598,7 @@ var dt = {
 var urlAirbinder = 'http://128.199.251.75:9098/price';
 var urlPluto = 'http://pluto.dev/0/price/garuda';
 var options = {
-	scrape: urlPluto,
+	scrape: urlAirbinder,
 	dt: dt,
 	airline: 'garuda'
 };
@@ -722,6 +606,94 @@ var garuda = new Garuda(options);
 garuda.run()
 	.then(function (prices) {
 		// console.log(prices);
+		expect(prices.adult).to.exist;
+		expect(prices.child).to.exist;
+		expect(prices.infant).to.exist;
+		expect(prices.basic).to.exist;
+		next();
+	})
+	.catch(function (err) {
+		return next(err);
+	});
+```
+
+<a name="lion"></a>
+# Lion
+<a name="lion-run"></a>
+## run
+should check db and then scrape and then save .
+
+```js
+var dt = {
+	rute       : 'OW',
+	ori        : 'SUB',
+	dst        : 'CGK',
+	adult      : '1',
+	child      : '0',
+	infant     : '0',
+	dep_date   : '27+Nov+2014',
+	id_maskapai: '9',
+	user       : 'ndebomitra',
+	rute       : 'OW',
+	dep_radio  : 'M0_C0_F0_S5',
+	dep_last_radio  : 'M0_C0_F0',
+	_          : '1416361230832',
+}
+var urlAirbinder = 'http://128.199.251.75:2/price';
+var urlPluto = 'http://pluto.dev/0/price/lion';
+var options = {
+	scrape: urlAirbinder,
+	dt: dt,
+	airline: 'lion'
+};
+var lion = new Lion(options);
+lion.run()
+	.then(function (prices) {
+		console.log(prices);
+		expect(prices.adult).to.exist;
+		expect(prices.child).to.exist;
+		expect(prices.infant).to.exist;
+		expect(prices.basic).to.exist;
+		next();
+	})
+	.catch(function (err) {
+		return next(err);
+	});
+```
+
+<a name="sriwijaya"></a>
+# Sriwijaya
+<a name="sriwijaya-run"></a>
+## run
+should check db and then scrape and then save .
+
+```js
+var dt = {
+	rute       : 'OW',
+	ori        : 'SUB',
+	dst        : 'CGK',
+	adult      : '1',
+	child      : '0',
+	infant     : '0',
+	dep_date   : '27+11+2014',
+	id_maskapai: '9',
+	user       : 'DEPAG0101',
+	rute       : 'OW',
+	dep_radio  : 'SJ+267_E',
+	dep_last_radio  : 'M0_C0_F0',
+	_          : '1416361230832',
+}
+var urlAirbinder = 'http://128.199.251.75:9019/price';
+var urlPluto = 'http://pluto.dev/0/price/sriwijaya';
+var options = {
+	scrape: urlAirbinder,
+	dt: dt,
+	airline: 'sriwijaya'
+};
+var sriwijaya = new Sriwijaya(options);
+sriwijaya.run()
+	.then(function (prices) {
+		console.log(prices);
 		expect(prices.adult).to.exist;
 		expect(prices.child).to.exist;
 		expect(prices.infant).to.exist;

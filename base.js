@@ -4,6 +4,7 @@ var db                    = require('./libs/db');
 var _                     = require('underscore');
 var Promise               = require('promise');
 var querystring           = require('querystring');
+var debug                 = require('debug')('raabbajam:priceScraper:base');
 var airlines              = {"airasia": 1, "citilink": 2, "garuda": 3, "lion": 4, "sriwijaya": 5, "xpress": 6};
 var priceScraperPrototype = {
 	init                     : init,
@@ -32,7 +33,6 @@ var priceScraper = baseClass.extend(priceScraperPrototype);
  * @param  {Object} args Custom options.
  */
 function init(args) {
-	this.db = db;
 	this.setOptions(args);
 	this.priceCode = airlines[this.airline] || 0;
 }
@@ -49,7 +49,8 @@ function setOptions() {
 			airline: '',
 			index: 'pluto',
 			type: 'price',
-			parallel: false
+			parallel: false,
+			db: db,
 		}
 		var options = _.deepExtend(defaults, args);
 		for (var key in defaults) {
@@ -296,7 +297,7 @@ function run () {
 		_this.getCache()
 			.then(function (cache) {
 				console.log('cache found', cache);
-				if (_this.isCacheComplete(cache))
+				if (!_this.isCacheComplete(cache))
 					return reject();
 				return resolve(cache);
 			}, function (err) {
