@@ -305,8 +305,9 @@ function run () {
 					.then(function (results) {
 						console.log('got results getAll', results);
 						var prices = _this.calculatePrices(results);
-						_this.saveCache(prices);
-						return resolve(prices);
+						return _this.saveCache(prices, function () {
+							return resolve(prices);
+						});
 					})
 					.catch(function (err) {
 						// console.log(err.stack);
