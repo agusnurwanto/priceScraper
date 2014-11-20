@@ -51,6 +51,7 @@ function setOptions() {
 			type: 'price',
 			parallel: false,
 			db: db,
+			priceScraper: true
 		}
 		var options = _.deepExtend(defaults, args);
 		for (var key in defaults) {
@@ -103,8 +104,7 @@ function prepareRequestData () {
  */
 function prepareRequestQuery () {
 	var _dt  = {}
-	var dt   = _.deepExtend(this.dt, _dt)
-	dt.priceScraper = true;
+	var dt   = _.deepExtend(this.dt, _dt);
 	var query = querystring.stringify(dt);
 	query = query.replace(/%2B/g, '+');
 	return query;
