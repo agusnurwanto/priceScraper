@@ -25,7 +25,7 @@ function setOptions() {
 		var args = arguments[0];
 		var defaults = {
 			scrape  : '', //if url will be used as request with query, if function will be executed with dt object
-			dt      : {ori: '', dst: '', flightCode: '', classCode: '', priceScraper: true },
+			dt      : {ori: '', dst: '', flightCode: '', classCode: '' },
 			airline : '',
 			index   : 'pluto',
 			type    : 'price',
@@ -81,7 +81,7 @@ function prepareRequestData () {
  * @return {String} String formatted for parameter in request function
  */
 function prepareRequestQuery () {
-	var _dt   = {};
+	var _dt   = {priceScraper: true};
 	var dt    = _.deepExtend(this.dt, _dt);
 	var query = querystring.stringify(dt);
 	query     = query.replace(/%2B/g, '+');
@@ -173,7 +173,7 @@ function preparePricesInputToDB (prices) {
  */
 function saveCache (prices, callback) {
 	if (!this.isCacheComplete(prices)) {
-		// debug('Not saved. Requirements not met.', prices);
+		debug('Not saved. Requirements not met.', prices);
 		return false;
 	}
 	callback = (typeof callback === 'function') ? callback : function() {};
@@ -191,7 +191,7 @@ function saveCache (prices, callback) {
 	data.id = _this.generateId(data);
 	debug(data);
 	db.index(_this.index, _this.type, data, function (err, res) {
-		// debug('savecache', res, data);
+		debug('savecache', res, data);
 		return callback(err, res);
 	});
 }
@@ -275,15 +275,15 @@ function run () {
 		}
 		_this.getCache()
 			.then(function (cache) {
-				// debug('cache found', cache);
+				debug('cache found', cache);
 				if (!_this.isCacheComplete(cache))
 					return reject(new Errror('Cache not complete.'));
 				return resolve(cache);
 			}, function (err) {
-				// debug('no cache');
+				debug('no cache');
 				return _this.getAll()
 					.then(function (results) {
-						// debug('got results getAll', results);
+						debug('got results getAll', results);
 						var prices = _this.calculatePrices(results);
 						return _this.saveCache(prices, function () {
 							return resolve(prices);
