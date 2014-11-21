@@ -1,5 +1,6 @@
-var Base = require('../base');
-var Promise = require('promise');
+var Base            = require('../base');
+var debug           = require('debug')('raabbajam:priceScraper:garuda');
+var Promise         = require('promise');
 var garudaPrototype = {
 	init: function (args) {
 		this._super(args);

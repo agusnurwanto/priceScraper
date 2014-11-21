@@ -1,33 +1,12 @@
 var baseClass             = require('./libs/base');
-var scraper               = new (require('./libs/scraper'));
+var scraper               = new (require('./libs/scraper'))();
 var db                    = require('./libs/db');
 var _                     = require('underscore');
 var Promise               = require('promise');
 var querystring           = require('querystring');
 var debug                 = require('debug')('raabbajam:priceScraper:base');
 var airlines              = {"airasia": 1, "citilink": 2, "garuda": 3, "lion": 4, "sriwijaya": 5, "xpress": 6};
-var priceScraperPrototype = {
-	init                     : init,
-	setOption                : setOption,
-	setOptions               : setOptions,
-	setMode                  : setMode,
-	prepareRequestData       : prepareRequestData,
-	prepareRequestQuery      : prepareRequestQuery,
-	prepareDatabaseQuery     : prepareDatabaseQuery,
-	preparePricesOutputFromDB: preparePricesOutputFromDB,
-	getCache                 : getCache,
-	preparePricesInputToDB   : preparePricesInputToDB,
-	saveCache                : saveCache,
-	generateId               : generateId,
-	get                      : get,
-	getAll                   : getAll,
-	getAllParallel           : getAllParallel,
-	isCacheComplete          : isCacheComplete,
-	calculatePrices          : calculatePrices,
-	run                      : run,
-}
 _.mixin(require('underscore.deep'));
-var priceScraper = baseClass.extend(priceScraperPrototype);
 /**
  * [init description]
  * @param  {Object} args Custom options.
@@ -41,6 +20,7 @@ function init(args) {
  * or two arguments, with the first as key and second as value
  */
 function setOptions() {
+	var key, value;
 	if (arguments.length === 1) {
 		var args = arguments[0];
 		var defaults = {
@@ -51,17 +31,17 @@ function setOptions() {
 			type: 'price',
 			parallel: false,
 			db: db,
-		}
+		};
 		var options = _.deepExtend(defaults, args);
-		for (var key in defaults) {
-			var value = options[key];
+		for (key in defaults) {
+			value = options[key];
 			this[key] = value;
 			if (typeof this[key] === 'string')
 				this[key] = this[key].toLowerCase();
 		}
 	} else {
-		var key = arguments[0];
-		var value = arguments[1];
+		key = arguments[0];
+		value = arguments[1];
 		this[key] = value;
 	}
 	return this;
@@ -80,7 +60,7 @@ function setMode(mode) {
 	if(!mode || !mode.length || mode.length !== 3) {
 		mode = '100';
 	}
-	var aMode      = mode.split('').filter(function (val) { return val == 0 || val == 1});
+	var aMode      = mode.split('').filter(function (val) { return val == "0" || val == "1";});
 	this.dt.adult  = aMode[0];
 	this.dt.child  = aMode[1];
 	this.dt.infant = aMode[2];
@@ -91,10 +71,10 @@ function setMode(mode) {
  * @return {Object} Data formatted for parameter in scraper function
  */
 function prepareRequestData () {
-	var _dt  = {}
-	var dt   = _.deepExtend(this.dt, _dt)
+	var _dt  = {};
+	var dt   = _.deepExtend(this.dt, _dt);
 	dt.priceScraper = true;
-	var data = {airline: this.airline, action: this.type, query: dt }
+	var data = {airline: this.airline, action: this.type, query: dt };
 	return data;
 }
 /**
@@ -102,7 +82,7 @@ function prepareRequestData () {
  * @return {String} String formatted for parameter in request function
  */
 function prepareRequestQuery () {
-	var _dt  = {}
+	var _dt  = {};
 	var dt   = _.deepExtend(this.dt, _dt);
 	var query = querystring.stringify(dt);
 	query = query.replace(/%2B/g, '+');
@@ -159,19 +139,19 @@ function getCache () {
 		var id = _this.generateId(data);
 		_this.db.get(_this.index, _this.type, id, function (err, res) {
 			if (err)
-				return reject(err)
-			try {res = JSON.parse(res)} catch(err) { return reject(err)}
-			// console.log(JSON.stringify(res, null, 2));
+				return reject(err);
+			try {res = JSON.parse(res);} catch(error) { return reject(error);}
+			// debug(JSON.stringify(res, null, 2));
 			if (!res.found)
 				return reject(new Error('No cache found'));
 			var prices = res._source.prices;
-			// console.log(JSON.stringify(res));
+			// debug(JSON.stringify(res));
 			if (!!prices && typeof prices === 'object')
 				return resolve(prices);
 			prices = {};
 			var price = res._source.price;
 			if(!!price)
-				prices.adult = price
+				prices.adult = price;
 			prices = _this.preparePricesOutputFromDB(prices);
 			return resolve(prices);
 		});
@@ -194,7 +174,7 @@ function preparePricesInputToDB (prices) {
  */
 function saveCache (prices, callback) {
 	if (!this.isCacheComplete(prices)) {
-		console.log('Not saved. Requirements not met.', prices);
+		debug('Not saved. Requirements not met.', prices);
 		return false;
 	}
 	callback = (typeof callback === 'function') ? callback : function() {};
@@ -210,10 +190,10 @@ function saveCache (prices, callback) {
 		price      : _prices.adult
 	};
 	data.id = _this.generateId(data);
-	// console.log(data);
+	// debug(data);
 	db.index(_this.index, _this.type, data, function (err, res) {
-		console.log('savecache', res, data);
-		return callback(err, res)
+		debug('savecache', res, data);
+		return callback(err, res);
 	});
 }
 /**
@@ -229,7 +209,7 @@ function get(mode) {
 	} else {
 		var query = this.prepareRequestQuery();
 		var url = this.scrape + '?' + query;
-		// console.log(url);
+		// debug(url);
 		return scraper.get(url);
 	}
 }
@@ -248,16 +228,16 @@ function getAll () {
 			return _this.get(mode)
 				.then(function (res) {
 					results.push(res);
-				})
+				});
 		});
 	}, Promise.resolve());
 	return new Promise(function (resolve, reject) {
 		steps
 			.then(function () {
-				// console.log(results,'results');
+				// debug(results,'results');
 				return resolve(results);
-			})
-	})
+			});
+	});
 }
 /**
  * get scrape data all modes paraller
@@ -268,7 +248,7 @@ function getAllParallel () {
 	var modes = ['100', '110', '101'];
 	var steps = [];
 	modes.forEach(function (mode) {
-		var step = _this.get(mode)
+		var step = _this.get(mode);
 		steps.push(step);
 	});
 	return Promise.all(steps);
@@ -291,30 +271,31 @@ function run () {
 	var _this = this;
 	return new Promise(function (resolve, reject) {
 		if(!!_this.dt.priceScraper){
+			// console.log('_this.dt.priceScraper',_this.dt.priceScraper);
 			return resolve(true);
 		}
 		_this.getCache()
 			.then(function (cache) {
-				console.log('cache found', cache);
+				debug('cache found', cache);
 				if (!_this.isCacheComplete(cache))
 					return reject(new Errror('Cache not complete.'));
 				return resolve(cache);
 			}, function (err) {
-				console.log('no cache');
+				debug('no cache');
 				return _this.getAll()
 					.then(function (results) {
-						console.log('got results getAll', results);
+						debug('got results getAll', results);
 						var prices = _this.calculatePrices(results);
 						return _this.saveCache(prices, function () {
 							return resolve(prices);
 						});
 					})
 					.catch(function (err) {
-						// console.log(err.stack);
+						// debug(err.stack);
 						return reject(err);
-					})
-			})
-	})
+					});
+			});
+	});
 }
 /**
  * internal function used when saving data to db
@@ -323,9 +304,9 @@ function run () {
  */
 function generateId (data) {
 	var id = data.origin + data.destination + data.airline + data.flight + data.class;
-	// console.log(id);
+	// debug(id);
 	return id.toLowerCase();
-};
+}
 /**
  * check if cache qualified as complete
  * @param  {Object}  cache data from db
@@ -339,4 +320,26 @@ function isCacheComplete (cache) {
 		return !!cache[requirement] && cache[requirement] > 0;
 	});
 }
+
+var priceScraperPrototype = {
+	init                     : init,
+	setOption                : setOption,
+	setOptions               : setOptions,
+	setMode                  : setMode,
+	prepareRequestData       : prepareRequestData,
+	prepareRequestQuery      : prepareRequestQuery,
+	prepareDatabaseQuery     : prepareDatabaseQuery,
+	preparePricesOutputFromDB: preparePricesOutputFromDB,
+	getCache                 : getCache,
+	preparePricesInputToDB   : preparePricesInputToDB,
+	saveCache                : saveCache,
+	generateId               : generateId,
+	get                      : get,
+	getAll                   : getAll,
+	getAllParallel           : getAllParallel,
+	isCacheComplete          : isCacheComplete,
+	calculatePrices          : calculatePrices,
+	run                      : run,
+};
+var priceScraper = baseClass.extend(priceScraperPrototype);
 module.exports = priceScraper;

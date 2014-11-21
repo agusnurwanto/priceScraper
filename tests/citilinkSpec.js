@@ -18,6 +18,7 @@ describe('Citilink', function () {
 				rute       : 'OW',
 				dep_radio  : '1Fare6',
 				_          : '1416361230832',
+				priceScraper: false,
 			}
 			var urlAirbinder = 'http://128.199.251.75:4/price';
 			var urlPluto = 'http://pluto.dev/0/price/citilink';
@@ -29,7 +30,7 @@ describe('Citilink', function () {
 			var citilink = new Citilink(options);
 			citilink.run()
 				.then(function (prices) {
-					console.log(prices);
+					// console.log(prices);
 					expect(prices.adult).to.exist;
 					expect(prices.child).to.exist;
 					expect(prices.infant).to.exist;

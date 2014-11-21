@@ -17,6 +17,7 @@ describe('Garuda', function () {
 				'adult'    : '1',
 				'child'    : '0',
 				'infant'   : '0',
+				priceScraper: false,
 			}
 			var urlAirbinder = 'http://128.199.251.75:9098/price';
 			var urlPluto = 'http://pluto.dev/0/price/garuda';

@@ -19,6 +19,7 @@ describe('Lion', function () {
 				dep_radio  : 'M0_C0_F0_S5',
 				dep_last_radio  : 'M0_C0_F0',
 				_          : '1416361230832',
+				priceScraper: false,
 			}
 			var urlAirbinder = 'http://128.199.251.75:2/price';
 			var urlPluto = 'http://pluto.dev/0/price/lion';
@@ -30,7 +31,7 @@ describe('Lion', function () {
 			var lion = new Lion(options);
 			lion.run()
 				.then(function (prices) {
-					console.log(prices);
+					// console.log(prices);
 					expect(prices.adult).to.exist;
 					expect(prices.child).to.exist;
 					expect(prices.infant).to.exist;

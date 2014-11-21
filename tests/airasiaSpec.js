@@ -1,5 +1,6 @@
 var expect = require('chai').expect;
 var Scrapers = require('../index');
+var debug           = require('debug')('raabbajam:priceScraper:airasiaSpec');
 var Airasia = Scrapers.airasia;
 describe('Airasia', function () {
 	this.timeout(30000);
@@ -19,6 +20,7 @@ describe('Airasia', function () {
 				rute       : 'OW',
 				dep_radio  : '1_1',
 				_          : '1416361230832',
+				priceScraper: false,
 			}
 			var urlAirbinder = 'http://128.199.251.75:99/price';
 			var urlPluto = 'http://pluto.dev/0/price/airasia';
@@ -30,7 +32,7 @@ describe('Airasia', function () {
 			var airasia = new Airasia(options);
 			airasia.run()
 				.then(function (prices) {
-					// console.log(prices);
+					// debug(prices);
 					expect(prices.adult).to.exist;
 					expect(prices.child).to.exist;
 					expect(prices.infant).to.exist;

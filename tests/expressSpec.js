@@ -19,6 +19,7 @@ describe('Express', function () {
 				rute       : 'OW',
 				dep_radio  : 'normal',
 				_          : '1416361230832',
+				priceScraper: false,
 			}
 			var urlAirbinder = 'http://128.199.251.75:8097/price';
 			var urlPluto = 'http://pluto.dev/0/price/express';

@@ -2,7 +2,7 @@ var expect = require('chai').expect;
 var Promise = require('promise');
 var Base   = require('../base');
 describe('base class', function () {
-	this.timeout(3000)
+	this.timeout(3000);
 	describe('init', function () {
 		it('should have property based on defaults', function (next) {
 			var base = new Base();
