@@ -24,13 +24,13 @@ function setOptions() {
 	if (arguments.length === 1) {
 		var args = arguments[0];
 		var defaults = {
-			scrape: '', //if url will be used as request with query, if function will be executed with dt object
-			dt: {ori: '', dst: '', flightCode: '', classCode: '', priceScraper: true },
-			airline: '',
-			index: 'pluto',
-			type: 'price',
+			scrape  : '', //if url will be used as request with query, if function will be executed with dt object
+			dt      : {ori: '', dst: '', flightCode: '', classCode: '', priceScraper: true },
+			airline : '',
+			index   : 'pluto',
+			type    : 'price',
 			parallel: false,
-			db: db,
+			db      : db,
 		};
 		var options = _.deepExtend(defaults, args);
 		for (key in defaults) {
@@ -73,7 +73,6 @@ function setMode(mode) {
 function prepareRequestData () {
 	var _dt  = {};
 	var dt   = _.deepExtend(this.dt, _dt);
-	dt.priceScraper = true;
 	var data = {airline: this.airline, action: this.type, query: dt };
 	return data;
 }
@@ -82,10 +81,10 @@ function prepareRequestData () {
  * @return {String} String formatted for parameter in request function
  */
 function prepareRequestQuery () {
-	var _dt  = {};
-	var dt   = _.deepExtend(this.dt, _dt);
+	var _dt   = {};
+	var dt    = _.deepExtend(this.dt, _dt);
 	var query = querystring.stringify(dt);
-	query = query.replace(/%2B/g, '+');
+	query     = query.replace(/%2B/g, '+');
 	return query;
 }
 /**
@@ -141,11 +140,11 @@ function getCache () {
 			if (err)
 				return reject(err);
 			try {res = JSON.parse(res);} catch(error) { return reject(error);}
-			// debug(JSON.stringify(res, null, 2));
+			debug(JSON.stringify(res, null, 2));
 			if (!res.found)
 				return reject(new Error('No cache found'));
 			var prices = res._source.prices;
-			// debug(JSON.stringify(res));
+			debug(JSON.stringify(res));
 			if (!!prices && typeof prices === 'object')
 				return resolve(prices);
 			prices = {};
@@ -174,7 +173,7 @@ function preparePricesInputToDB (prices) {
  */
 function saveCache (prices, callback) {
 	if (!this.isCacheComplete(prices)) {
-		debug('Not saved. Requirements not met.', prices);
+		// debug('Not saved. Requirements not met.', prices);
 		return false;
 	}
 	callback = (typeof callback === 'function') ? callback : function() {};
@@ -190,9 +189,9 @@ function saveCache (prices, callback) {
 		price      : _prices.adult
 	};
 	data.id = _this.generateId(data);
-	// debug(data);
+	debug(data);
 	db.index(_this.index, _this.type, data, function (err, res) {
-		debug('savecache', res, data);
+		// debug('savecache', res, data);
 		return callback(err, res);
 	});
 }
@@ -209,7 +208,7 @@ function get(mode) {
 	} else {
 		var query = this.prepareRequestQuery();
 		var url = this.scrape + '?' + query;
-		// debug(url);
+		debug(url);
 		return scraper.get(url);
 	}
 }
@@ -234,7 +233,7 @@ function getAll () {
 	return new Promise(function (resolve, reject) {
 		steps
 			.then(function () {
-				// debug(results,'results');
+				debug(results,'results');
 				return resolve(results);
 			});
 	});
@@ -276,22 +275,22 @@ function run () {
 		}
 		_this.getCache()
 			.then(function (cache) {
-				debug('cache found', cache);
+				// debug('cache found', cache);
 				if (!_this.isCacheComplete(cache))
 					return reject(new Errror('Cache not complete.'));
 				return resolve(cache);
 			}, function (err) {
-				debug('no cache');
+				// debug('no cache');
 				return _this.getAll()
 					.then(function (results) {
-						debug('got results getAll', results);
+						// debug('got results getAll', results);
 						var prices = _this.calculatePrices(results);
 						return _this.saveCache(prices, function () {
 							return resolve(prices);
 						});
 					})
 					.catch(function (err) {
-						// debug(err.stack);
+						debug(err.stack);
 						return reject(err);
 					});
 			});
@@ -304,7 +303,7 @@ function run () {
  */
 function generateId (data) {
 	var id = data.origin + data.destination + data.airline + data.flight + data.class;
-	// debug(id);
+	debug(id);
 	return id.toLowerCase();
 }
 /**
