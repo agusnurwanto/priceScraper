@@ -134,9 +134,9 @@ function getCache () {
 			airline    : _this.airline,
 			flight     : _this.dt.flightCode || '',
 			class      : _this.dt.classCode || '',
-			transit1   : _this.dt.transit1;
-			transit2   : _this.dt.transit2;
-			transit3   : _this.dt.transit3;
+			transit1   : _this.dt.transit1,
+			transit2   : _this.dt.transit2,
+			transit3   : _this.dt.transit3,
 		};
 		var id = _this.generateId(data);
 		_this.db.get(_this.index, _this.type, id, function (err, res) {
