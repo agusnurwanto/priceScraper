@@ -305,7 +305,7 @@ function run () {
  * @return {string}      id for db
  */
 function generateId (data) {
-	var id = data.origin + '_' + data.destination + '_' + data.airline + '_' + data.flight + '_' + data.class '_';
+	var id = data.origin + '_' + data.destination + '_' + data.airline + '_' + data.flight + '_' + data.class;
 	if (data.transit1)
 		id +=  '_' + data.transit1;
 	if (data.transit2)
