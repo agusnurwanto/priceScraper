@@ -189,7 +189,10 @@ function saveCache (prices, callback) {
 		flight     : _this.dt.flightCode || '',
 		class      : _this.dt.classCode || '',
 		prices     : _prices,
-		price      : _prices.adult
+		price      : _prices.adult,
+		transit1   : _this.dt.transit1,
+		transit2   : _this.dt.transit2,
+		transit3   : _this.dt.transit3,
 	};
 	data.id = _this.generateId(data);
 	debug(data);
