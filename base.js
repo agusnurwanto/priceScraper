@@ -139,6 +139,7 @@ function getCache () {
 			transit3   : _this.dt.transit3,
 		};
 		var id = _this.generateId(data);
+		// debug(id);
 		_this.db.get(_this.index, _this.type, id, function (err, res) {
 			if (err)
 				return reject(err);
@@ -190,12 +191,12 @@ function saveCache (prices, callback) {
 		class      : _this.dt.classCode || '',
 		prices     : _prices,
 		price      : _prices.adult,
-		transit1   : _this.dt.transit1 || '',
-		transit2   : _this.dt.transit2 || '',
-		transit3   : _this.dt.transit3 || '',
+		transit1   : _this.dt.transit1,
+		transit2   : _this.dt.transit2,
+		transit3   : _this.dt.transit3,
 	};
 	data.id = _this.generateId(data);
-	// debug(data);
+	debug(data);
 	db.index(_this.index, _this.type, data, function (err, res) {
 		debug('savecache', res, data);
 		return callback(err, res);
@@ -239,7 +240,11 @@ function getAll () {
 	return new Promise(function (resolve, reject) {
 		steps
 			.then(function () {
-				// debug(results,'results');
+				debug(results,'results');
+				return resolve(results);
+			})
+			.catch(function (err) {
+				debug('Error. Sent incomplete results:',results);
 				return resolve(results);
 			});
 	});
@@ -283,13 +288,15 @@ function run () {
 			.then(function (cache) {
 				debug('cache found', cache);
 				if (!_this.isCacheComplete(cache))
-					return reject(new Errror('Cache not complete.'));
+					return reject(new Error('Cache not complete.'));
 				return resolve(cache);
 			}, function (err) {
 				debug('no cache');
 				return _this.getAll()
 					.then(function (results) {
 						debug('got results getAll', results);
+						if (results.length !== 3)
+							return reject(new Error('Results not complete.'));
 						var prices = _this.calculatePrices(results);
 						return _this.saveCache(prices, function () {
 							return resolve(prices);
