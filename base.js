@@ -143,7 +143,7 @@ function getCache () {
 			if (err)
 				return reject(err);
 			try {res = JSON.parse(res);} catch(error) { return reject(error);}
-			debug(JSON.stringify(res, null, 2));
+			// debug(JSON.stringify(res, null, 2));
 			if (!res.found)
 				return reject(new Error('No cache found'));
 			var prices = res._source.prices;
@@ -190,12 +190,12 @@ function saveCache (prices, callback) {
 		class      : _this.dt.classCode || '',
 		prices     : _prices,
 		price      : _prices.adult,
-		transit1   : _this.dt.transit1,
-		transit2   : _this.dt.transit2,
-		transit3   : _this.dt.transit3,
+		transit1   : _this.dt.transit1 || '',
+		transit2   : _this.dt.transit2 || '',
+		transit3   : _this.dt.transit3 || '',
 	};
 	data.id = _this.generateId(data);
-	debug(data);
+	// debug(data);
 	db.index(_this.index, _this.type, data, function (err, res) {
 		debug('savecache', res, data);
 		return callback(err, res);
@@ -239,7 +239,7 @@ function getAll () {
 	return new Promise(function (resolve, reject) {
 		steps
 			.then(function () {
-				debug(results,'results');
+				// debug(results,'results');
 				return resolve(results);
 			});
 	});

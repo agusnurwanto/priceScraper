@@ -259,7 +259,7 @@ describe('base class', function () {
 			};
 			var base = new Base();
 			var id = base.generateId(data);
-			expect(id).to.eq('cgksublionabcxx')
+			expect(id).to.eq('cgk_sub_lion_abc_xx')
 			next();
  		});
  	});
