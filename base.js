@@ -176,11 +176,12 @@ function preparePricesInputToDB (prices) {
  * @param  {Object} price object containing price data
  */
 function saveCache (prices, callback) {
-	if (!this.isCacheComplete(prices)) {
-		debug('Not saved. Requirements not met.', prices);
-		return false;
-	}
 	callback = (typeof callback === 'function') ? callback : function() {};
+	if (!this.isCacheComplete(prices)) {
+		var message = 'Not saved. Requirements not met: ' + prices;
+		debug(message);
+		return callback(new Error(message));
+	}
 	var _this = this;
 	var _prices = _this.preparePricesInputToDB(prices);
 	var data = {
@@ -240,7 +241,7 @@ function getAll () {
 	return new Promise(function (resolve, reject) {
 		steps
 			.then(function () {
-				debug(results,'results');
+				// debug(results,'results');
 				return resolve(results);
 			})
 			.catch(function (err) {
@@ -298,7 +299,11 @@ function run () {
 						if (results.length !== 3)
 							return reject(new Error('Results not complete.'));
 						var prices = _this.calculatePrices(results);
-						return _this.saveCache(prices, function () {
+						return _this.saveCache(prices, function (err, res) {
+							if (err){
+								console.log('Error on saveCache');
+								return reject(err);
+							}
 							return resolve(prices);
 						});
 					})
