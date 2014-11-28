@@ -192,10 +192,14 @@ function saveCache (prices, callback) {
 		class      : _this.dt.classCode || '',
 		prices     : _prices,
 		price      : _prices.adult,
-		transit1   : _this.dt.transit1,
-		transit2   : _this.dt.transit2,
-		transit3   : _this.dt.transit3,
 	};
+	for (var i = 1; i <= 3; i++){
+		if(!!_this.dt['transit' + i]){
+			data['transit' + i] = _this.dt['transit' + i];
+		} else {
+			break;
+		}
+	}
 	data.id = _this.generateId(data);
 	debug(data);
 	db.index(_this.index, _this.type, data, function (err, res) {

@@ -25,7 +25,11 @@ var citilinkPrototype = {
 		return _110.total - _100.total;
 	},
 	calculateInfant: function (results) {
-		var trip = this.dt.tripNum || 1;
+		for(var i = 1; i <=3; i++){
+			if(!this.dt['transit' + i])
+				break;
+		}
+		var trip = this.dt.tripNum || i;
 		return 225000 * trip;
 	},
 	calculateBasic: function (results) {
