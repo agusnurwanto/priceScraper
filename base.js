@@ -343,9 +343,13 @@ function isCacheComplete (cache) {
 	if (!cache)
 		return false;
 	var requirements = ['adult', 'child', 'infant', 'basic'];
-	return _.every(requirements, function (requirement) {
+	var complete = _.every(requirements, function (requirement) {
 		return !!cache[requirement] && cache[requirement] > 0;
 	});
+	if (!complete)
+		return complete;
+	if(cache.child > cache.adult || cache.infant > cache.adult)
+		return false;
 }
 
 var priceScraperPrototype = {
