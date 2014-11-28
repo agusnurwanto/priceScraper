@@ -346,10 +346,9 @@ function isCacheComplete (cache) {
 	var complete = _.every(requirements, function (requirement) {
 		return !!cache[requirement] && cache[requirement] > 0;
 	});
-	if (!complete)
-		return complete;
-	if(cache.child > cache.adult || cache.infant > cache.adult)
+	if (!complete || cache.child > cache.adult || cache.infant > cache.adult)
 		return false;
+	return true;
 }
 
 var priceScraperPrototype = {
