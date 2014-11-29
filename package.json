@@ -24,6 +24,7 @@
   "dependencies": {
     "debug": "^2.1.0",
     "elasticsearchclient": "^0.5.3",
+    "lodash": "^2.4.1",
     "numeral": "^1.5.3",
     "promise": "^6.0.1",
     "request": "^2.48.0",

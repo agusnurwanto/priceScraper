@@ -19,6 +19,12 @@ describe('Citilink', function () {
 				dep_radio  : '1Fare6',
 				_          : '1416361230832',
 				priceScraper: false,
+				airline       : 'citilink',
+				flightCode    : 'QG',
+				classCode     : 'M510',
+				cek_instant   : 1,
+				cek_instant_id: 'QG_M510',
+				dep_date      : '27+12+2014',
 			}
 			var urlAirbinder = 'http://128.199.251.75:4/price';
 			var urlPluto = 'http://pluto.dev/0/price/citilink';

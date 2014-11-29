@@ -178,7 +178,7 @@ function preparePricesInputToDB (prices) {
 function saveCache (prices, callback) {
 	callback = (typeof callback === 'function') ? callback : function() {};
 	if (!this.isCacheComplete(prices)) {
-		var message = 'Not saved. Requirements not met: ' + prices;
+		var message = 'Not saved. Requirements not met: ' + JSON.stringify(prices, null, 2);
 		debug(message);
 		return callback(new Error(message));
 	}
@@ -228,12 +228,14 @@ function get(mode) {
  * get scrape data all modes sequence
  * @return {Object} Array of object containing data price
  */
-function getAll () {
+function getAll (modes) {
 	if(!!this.parallel)
 		return this.getAllParallel();
 	var _this = this;
 	var results = [];
-	var modes = ['100', '110', '101'];
+	modes = modes || _this.defaultModes || ['100', '110', '101'];
+	if (!(modes instanceof Array))
+		modes = [modes];
 	var steps = modes.reduce(function (sequence, mode) {
 		return sequence.then(function () {
 			return _this.get(mode)
@@ -299,8 +301,9 @@ function run () {
 				debug('no cache');
 				return _this.getAll()
 					.then(function (results) {
-						debug('got results getAll', results);
-						if (results.length !== 3)
+						debug('got results getAll', JSON.stringify(results, null, 2));
+						var expectedLength = _this.defaultModes.length || 3;
+						if (results.length !== expectedLength)
 							return reject(new Error('Results not complete.'));
 						var prices = _this.calculatePrices(results);
 						return _this.saveCache(prices, function (err, res) {
