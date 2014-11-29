@@ -302,7 +302,7 @@ function run () {
 				return _this.getAll()
 					.then(function (results) {
 						debug('got results getAll', JSON.stringify(results, null, 2));
-						var expectedLength = _this.defaultModes.length || 3;
+						var expectedLength = _this.defaultModes && _this.defaultModes.length || 3;
 						if (results.length !== expectedLength)
 							return reject(new Error('Results not complete.'));
 						var prices = _this.calculatePrices(results);
