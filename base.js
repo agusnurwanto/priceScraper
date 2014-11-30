@@ -81,7 +81,7 @@ function prepareRequestData () {
  * @return {String} String formatted for parameter in request function
  */
 function prepareRequestQuery () {
-	var _dt   = {priceScraper: true};
+	var _dt   = {pricescraper: true};
 	var dt    = _.deepExtend(this.dt, _dt);
 	var query = querystring.stringify(dt);
 	query     = query.replace(/%2B/g, '+');
@@ -287,7 +287,7 @@ function calculatePrices (results) {
 function run () {
 	var _this = this;
 	return new Promise(function (resolve, reject) {
-		if(!!_this.dt.priceScraper){
+		if(!!_this.dt.pricescraper){
 			// console.log('_this.dt.priceScraper',_this.dt.priceScraper);
 			return resolve(true);
 		}
