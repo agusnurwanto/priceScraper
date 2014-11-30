@@ -137,9 +137,11 @@ function getCache () {
 			transit1   : _this.dt.transit1,
 			transit2   : _this.dt.transit2,
 			transit3   : _this.dt.transit3,
+			cek_instant:_this.dt.cek_instant,
+			cek_instant_id:_this.dt.cek_instant_id,
 		};
 		var id = _this.generateId(data);
-		// debug(id);
+		debug('id',id);
 		_this.db.get(_this.index, _this.type, id, function (err, res) {
 			if (err)
 				return reject(err);
@@ -287,7 +289,7 @@ function calculatePrices (results) {
 function run () {
 	var _this = this;
 	return new Promise(function (resolve, reject) {
-		if(!!_this.dt.pricescraper){
+		if(!_this.dt || !!_this.dt.pricescraper || !!_this.dt.priceScraper){
 			// console.log('_this.dt.priceScraper',_this.dt.priceScraper);
 			return resolve(true);
 		}
