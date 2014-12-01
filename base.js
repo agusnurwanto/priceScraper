@@ -290,7 +290,7 @@ function run () {
 	var _this = this;
 	return new Promise(function (resolve, reject) {
 		if(!_this.dt || !!_this.dt.pricescraper || !!_this.dt.priceScraper){
-			// console.log('_this.dt.priceScraper',_this.dt.priceScraper);
+			console.log('_this.dt.priceScraper is true so it wont spawn again');
 			return resolve(true);
 		}
 		_this.getCache()
