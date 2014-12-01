@@ -1,6 +1,6 @@
-var Base = require('../base');
+var Base    = require('../base');
 var Promise = require('promise');
-var _ = require('lodash');
+var _       = require('lodash');
 function init (args) {
 	this._super(args);
 	this.defaultModes = ['110'];
@@ -25,11 +25,11 @@ function calculateAdult(results) {
 	var generalTax = _.reduce(_110.passenger_tax, function (result, num, key) {
 		if (key === 'tax')
 			return result;
-		console.log('num',num);
+		// console.log('num',num);
 		return result += +num;
 	}, 0);
-	console.log('generalTax',generalTax);
-	return generalTax / 2 + 1.1 * basic;
+	// console.log('generalTax',generalTax);
+	return (generalTax / 2) + (1.1 * basic);
 }
 function calculateChild (results) {
 	var _110 = results[0].dep_price;
@@ -39,7 +39,7 @@ function calculateChild (results) {
 			return result;
 		return result += +num;
 	}, 0);
-	return generalTax / 2 + 1.1 * basic;
+	return (generalTax / 2) + (1.1 * basic);
 }
 function calculateInfant (results) {
 	for(var i = 1; i <=3; i++){

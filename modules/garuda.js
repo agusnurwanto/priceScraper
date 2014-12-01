@@ -3,6 +3,7 @@ var debug           = require('debug')('raabbajam:priceScraper:garuda');
 var Promise         = require('promise');
 function init(args) {
 	this._super(args);
+	this.defaultModes = ['111'];
 	// this.parallel = true;
 }
 function getAll() {
