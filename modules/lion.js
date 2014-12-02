@@ -49,11 +49,12 @@ function calculateBasic(results) {
 	return +_100.published_fare;
 };
 var lionPrototype = {
-	getAll: getAll,
-	calculateAdult: calculateAdult,
-	calculateChild: calculateChild,
+	init           : init,
+	getAll         : getAll,
+	calculateAdult : calculateAdult,
+	calculateChild : calculateChild,
 	calculateInfant: calculateInfant,
-	calculateBasic: calculateBasic,
+	calculateBasic : calculateBasic,
 };
 var Lion = Base.extend(lionPrototype);
 module.exports = Lion;
