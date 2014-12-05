@@ -26,7 +26,7 @@ function calculateAdult(results) {
 	var basic = +_101.depart.fare.adults.replace('1 x ', '');
 	var taxes = _.values(_101.depart.taxesAndFees);
 	var tax   = taxes.reduce(function(all, _tax) {
-		return all + _tax;
+		return +_tax + tax;
 	}, 0);
 	return basic + tax;
 }
@@ -35,7 +35,7 @@ function calculateChild(results) {
 	var basic = +_101.depart.fare.adults.replace('1 x ', '');
 	var taxes = _.values(_101.depart.taxesAndFees);
 	var tax   = taxes.reduce(function(all, _tax) {
-		return all + _tax;
+		return +_tax + tax;
 	}, 0);
 	return basic + tax;
 }
