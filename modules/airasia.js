@@ -5,7 +5,7 @@ var _       = require('lodash');
 function init(args) {
 	this._super(args);
 	this.defaultModes = ['101'];
-	this.addOns = ['calculateBaggage'];
+	this.addons = ['calculateBaggage'];
 	// this.parallel = true;
 }
 function  getAll() {
@@ -55,8 +55,8 @@ function calculateBaggage(results) {
 	baggages.forEach(function (baggage) {
 		var ssrs = baggage.availableSsrs;
 		total += _.min(ssrs, function (ssr) {
-			return !!ssr.price && ssr.price || 0;
-		});
+			return !!ssr.price && ssr.price || {};
+		}).price || 0;
 	});
 	return total;
 }
