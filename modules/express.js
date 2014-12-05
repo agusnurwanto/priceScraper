@@ -1,38 +1,47 @@
-var Base = require('../base');
+/*jshint -W079 */
+var Base    = require('../base');
 var Promise = require('promise');
+var _       = require('lodash');
+function init(args) {
+	this._super(args);
+	this.defaultModes = ['101'];
+	// this.parallel = true;
+}
+function  getAll() {
+	return this._super()
+	.then(function (results) {
+		var bodies = results.map(function (res) {
+			return JSON.parse(res.body);
+		});
+		return Promise.resolve(bodies);
+	})
+	.catch(function (err) {
+		return Promise.reject(err);
+	})
+}
+function calculateAdult(results) {
+	var _101  = results[0].departure;
+	return _101.adultTotalFare;
+}
+function calculateChild(results) {
+	var _101  = results[0].departure;
+	return _101.adultTotalFare;
+}
+function calculateInfant(results) {
+	var _101  = results[0].departure;
+	return _101.infantTotalFare;
+}
+function calculateBasic(results) {
+	var _101  = results[0].departure;
+	return _101.adultFare;
+}
 var expressPrototype = {
-	getAll: function () {
-		return this._super()
-			.then(function (results) {
-				// console.log(results);
-				var bodies = results.map(function (res) {
-					return JSON.parse(res.body);
-				})
-				// console.log(bodies,'bodies');
-				return Promise.resolve(bodies);
-			})
-			.catch(function (err) {
-				return Promise.reject(err);
-			})
-	},
-	calculateAdult: function (results) {
-		var _100 = results[0];
-		return +_100.total;
-	},
-	calculateChild: function (results) {
-		var _100 = results[0];
-		var _110 = results[1];
-		return _110.total - _100.total;
-	},
-	calculateInfant: function (results) {
-		var _100 = results[0];
-		var _101 = results[2];
-		return _101.total - _100.total;
-	},
-	calculateBasic: function (results) {
-		var _100 = results[0];
-		return +_100.departure.adultFare;
-	}
+	init            : init,
+	getAll          : getAll,
+	calculateAdult   : calculateAdult,
+	calculateChild   : calculateChild,
+	calculateInfant  : calculateInfant,
+	calculateBasic   : calculateBasic,
 };
-var Garuda = Base.extend(expressPrototype);
-module.exports = Garuda;
+var Express    = Base.extend(expressPrototype);
+module.exports = Express;

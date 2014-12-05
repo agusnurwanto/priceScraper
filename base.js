@@ -1,3 +1,4 @@
+/*jshint -W079*/
 var baseClass = require('./libs/base');
 var scraper = new(require('./libs/scraper'))();
 var db = require('./libs/db');
@@ -346,15 +347,15 @@ function calculatePrices(results) {
     infant: this.calculateInfant(results),
     basic: this.calculateBasic(results),
   };
-  debug('addons!', !!this.addons)
+  debug('addons!', !!this.addons);
   if (!!this.addons) {
     var _this = this;
     _this.addons.forEach(function(addon) {
-      debug('addon', addon)
+      debug('addon', addon);
       var key = addon.replace('calculate', '').toLowerCase();
       var val = _this[addon](results);
       prices[key] = val;
-    })
+    });
   }
   return prices;
 }
