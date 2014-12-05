@@ -5,6 +5,7 @@ var _       = require('lodash');
 function init(args) {
 	this._super(args);
 	this.defaultModes = ['101'];
+	this.addOns = ['calculateBaggage'];
 	// this.parallel = true;
 }
 function  getAll() {
@@ -47,13 +48,26 @@ function calculateBasic(results) {
 	var _101 = results[0];
 	return +_101.depart.fare.adults.replace('1 x ', '');
 }
+function calculateBaggage(results) {
+	var _101 = results[0];
+	var baggages = _101.depart.addOns.baggage;
+	var total = 0
+	baggages.forEach(function (baggage) {
+		var ssrs = baggage.availableSsrs;
+		total += _.min(ssrs, function (ssr) {
+			return !!ssr.price && ssr.price || 0;
+		});
+	});
+	return total;
+}
 var airasiaPrototype = {
 	init            : init,
 	getAll          : getAll,
-	calculateAdult  : calculateAdult,
-	calculateChild  : calculateChild,
-	calculateInfant : calculateInfant,
-	calculateBasic  : calculateBasic,
+	calculateAdult   : calculateAdult,
+	calculateChild   : calculateChild,
+	calculateInfant  : calculateInfant,
+	calculateBasic   : calculateBasic,
+	calculateBaggage : calculateBaggage,
 };
 var Airasia    = Base.extend(airasiaPrototype);
 module.exports = Airasia;

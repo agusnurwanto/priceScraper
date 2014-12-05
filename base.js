@@ -284,6 +284,12 @@ function calculatePrices (results) {
 		infant: this.calculateInfant(results),
 		basic : this.calculateBasic(results),
 	};
+	if (!!this.addons) {
+		var _this = this;
+		_this.addons.forEach(function (addon) {
+			prices[addon] = _this[addon](results);
+		})
+	}
 	return prices;
 }
 function run () {
