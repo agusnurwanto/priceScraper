@@ -37,7 +37,8 @@ function setOptions() {
 					ori: '',
 					dst: '',
 					flightCode: '',
-					classCode: ''
+					classCode: '',
+					passengersNum: 1,
 				},
 				airline: '',
 				index: 'pluto',

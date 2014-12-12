@@ -4,7 +4,7 @@ var Promise = require('promise');
 var _       = require('lodash');
 function init(args) {
 	this._super(args);
-	this.defaultModes = ['100'];
+	this.defaultModes = [ '' + this.dt.passengersNum + '00'];
 	this.addons = ['calculateBaggage'];
 	// this.parallel = true;
 }
