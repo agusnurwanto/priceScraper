@@ -75,7 +75,7 @@ function setMode(mode) {
 			mode = '100';
 		}
 		var aMode = mode.split('').filter(function(val) {
-			return val == "0" || val == "1";
+			return +val >= 0 && +val < 9;
 		});
 		this.dt.adult = aMode[0];
 		this.dt.child = aMode[1];

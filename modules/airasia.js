@@ -24,21 +24,21 @@ function  getAll() {
 }
 function calculateAdult(results) {
 	var _100  = results[0];
-	var basic = +_100.depart.fare.adults.replace('1 x ', '');
+	var basic = +_100.depart.fare.adults.replace(/\d+ x /, '');
 	var taxes = _.values(_100.depart.taxesAndFees);
 	var tax   = taxes.reduce(function(all, _tax) {
 		return +_tax + all;
 	}, 0);
-	return basic + tax;
+	return (basic + tax) / this.dt.passengersNum;
 }
 function calculateChild(results) {
 	var _100  = results[0];
-	var basic = +_100.depart.fare.adults.replace('1 x ', '');
+	var basic = +_100.depart.fare.adults.replace(/\d+ x /, '');
 	var taxes = _.values(_100.depart.taxesAndFees);
 	var tax   = taxes.reduce(function(all, _tax) {
 		return +_tax + all;
 	}, 0);
-	return basic + tax;
+	return (basic + tax) / this.dt.passengersNum;
 }
 function calculateInfant(results) {
 	if (!!this.dt) {
@@ -52,7 +52,7 @@ function calculateInfant(results) {
 }
 function calculateBasic(results) {
 	var _100 = results[0];
-	return +_100.depart.fare.adults.replace('1 x ', '');
+	return +_100.depart.fare.adults.replace(/\d+ x /, '');
 }
 function calculateBaggage(results) {
 	var _100 = results[0];
