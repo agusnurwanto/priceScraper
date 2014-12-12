@@ -4,7 +4,7 @@ var Promise = require('promise');
 var _       = require('lodash');
 function init(args) {
 	this._super(args);
-	this.defaultModes = ['101'];
+	this.defaultModes = ['100'];
 	this.addons = ['calculateBaggage'];
 	// this.parallel = true;
 }
@@ -23,34 +23,40 @@ function  getAll() {
 	})
 }
 function calculateAdult(results) {
-	var _101  = results[0];
-	var basic = +_101.depart.fare.adults.replace('1 x ', '');
-	var taxes = _.values(_101.depart.taxesAndFees);
+	var _100  = results[0];
+	var basic = +_100.depart.fare.adults.replace('1 x ', '');
+	var taxes = _.values(_100.depart.taxesAndFees);
 	var tax   = taxes.reduce(function(all, _tax) {
 		return +_tax + all;
 	}, 0);
 	return basic + tax;
 }
 function calculateChild(results) {
-	var _101  = results[0];
-	var basic = +_101.depart.fare.adults.replace('1 x ', '');
-	var taxes = _.values(_101.depart.taxesAndFees);
+	var _100  = results[0];
+	var basic = +_100.depart.fare.adults.replace('1 x ', '');
+	var taxes = _.values(_100.depart.taxesAndFees);
 	var tax   = taxes.reduce(function(all, _tax) {
 		return +_tax + all;
 	}, 0);
 	return basic + tax;
 }
 function calculateInfant(results) {
-	var _101 = results[0];
-	return +_101.depart.fare.infants.replace('1 x ', '');
+	if (!!this.dt) {
+		for(var i = 1; i <=3; i++){
+			if(!this.dt['transit' + i])
+				break;
+		}
+	}
+	var trip = !!this.dt && this.dt.tripNum || i;
+	return 150000 * trip;
 }
 function calculateBasic(results) {
-	var _101 = results[0];
-	return +_101.depart.fare.adults.replace('1 x ', '');
+	var _100 = results[0];
+	return +_100.depart.fare.adults.replace('1 x ', '');
 }
 function calculateBaggage(results) {
-	var _101 = results[0];
-	var baggages = _101.depart.addOns.baggage;
+	var _100 = results[0];
+	var baggages = _100.depart.addOns.baggage;
 	var total = 0
 	baggages.forEach(function (baggage) {
 		var ssrs = baggage.availableSsrs;
