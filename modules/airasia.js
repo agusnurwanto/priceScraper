@@ -29,7 +29,7 @@ function calculateAdult(results) {
 	var tax   = taxes.reduce(function(all, _tax) {
 		return +_tax + all;
 	}, 0);
-	return (basic + tax) / this.dt.passengersNum;
+	return basic + (tax / this.dt.passengersNum);
 }
 function calculateChild(results) {
 	var _100  = results[0];
@@ -38,7 +38,7 @@ function calculateChild(results) {
 	var tax   = taxes.reduce(function(all, _tax) {
 		return +_tax + all;
 	}, 0);
-	return (basic + tax) / this.dt.passengersNum;
+	return basic + (tax / this.dt.passengersNum);
 }
 function calculateInfant(results) {
 	if (!!this.dt) {
