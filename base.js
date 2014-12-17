@@ -286,7 +286,8 @@ function get(mode) {
 		} else {
 			var query = this.prepareRequestQuery();
 			var url = this.scrape + '?' + query;
-			debug(url);
+			debug('this.scrape', this.scrape);
+			debug('url', url);
 			return scraper.get(url);
 		}
 	}

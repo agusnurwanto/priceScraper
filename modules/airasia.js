@@ -57,14 +57,13 @@ function calculateBasic(results) {
 function calculateBaggage(results) {
 	var _100 = results[0];
 	var baggages = _100.depart.addOns.baggage;
-	var total = 0
-	baggages.forEach(function (baggage) {
+	// var total = 0
+	return baggages.reduce(function (total, baggage) {
 		var ssrs = baggage.availableSsrs;
-		total += _.min(ssrs, function (ssr) {
-			return !!ssr.price && ssr.price || {};
+		return total + _.min(ssrs, function (ssr) {
+			return ssr.price || 0;
 		}).price || 0;
-	});
-	return total;
+	}, 0);
 }
 var airasiaPrototype = {
 	init            : init,
