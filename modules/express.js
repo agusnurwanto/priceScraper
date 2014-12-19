@@ -4,7 +4,8 @@ var Promise = require('promise');
 var _       = require('lodash');
 function init(args) {
 	this._super(args);
-	this.defaultModes = ['101'];
+	this.dt.passengersNum = this.dt.passengersNum || 1;
+	this.defaultModes = [ '' + this.dt.passengersNum + '01'];
 	// this.parallel = true;
 }
 function  getAll() {
@@ -20,26 +21,26 @@ function  getAll() {
 	})
 }
 function calculateAdult(results) {
-	var _101  = results[0].departure;
-	return _101.adultTotalFare;
+	var _X01 = results[0].departure;
+	return _X01.adultTotalFare / this.dt.passengersNum;
 }
-function calculateChild(results) {
-	var _101  = results[0].departure;
-	return _101.adultTotalFare;
-}
+// function calculateChild(results) {
+// 	var _X01  = results[0].departure;
+// 	return _X01.adultTotalFare / this.dt.passengersNum;
+// }
 function calculateInfant(results) {
-	var _101  = results[0].departure;
-	return _101.infantTotalFare;
+	var _X01  = results[0].departure;
+	return _X01.infantTotalFare;
 }
 function calculateBasic(results) {
-	var _101  = results[0].departure;
-	return _101.adultFare;
+	var _X01  = results[0].departure;
+	return _X01.adultFare / this.dt.passengersNum;
 }
 var expressPrototype = {
 	init            : init,
 	getAll          : getAll,
 	calculateAdult   : calculateAdult,
-	calculateChild   : calculateChild,
+	calculateChild   : calculateAdult,
 	calculateInfant  : calculateInfant,
 	calculateBasic   : calculateBasic,
 };

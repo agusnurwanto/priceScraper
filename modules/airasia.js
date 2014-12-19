@@ -4,6 +4,7 @@ var Promise = require('promise');
 var _       = require('lodash');
 function init(args) {
 	this._super(args);
+	this.dt.passengersNum = this.dt.passengersNum || 1;
 	this.defaultModes = [ '' + this.dt.passengersNum + '00'];
 	this.addons = ['calculateBaggage'];
 	// this.parallel = true;
@@ -31,15 +32,15 @@ function calculateAdult(results) {
 	}, 0);
 	return basic + (tax / this.dt.passengersNum);
 }
-function calculateChild(results) {
-	var _100  = results[0];
-	var basic = +_100.depart.fare.adults.replace(/\d+ x /, '');
-	var taxes = _.values(_100.depart.taxesAndFees);
-	var tax   = taxes.reduce(function(all, _tax) {
-		return +_tax + all;
-	}, 0);
-	return basic + (tax / this.dt.passengersNum);
-}
+// function calculateChild(results) {
+// 	var _100  = results[0];
+// 	var basic = +_100.depart.fare.adults.replace(/\d+ x /, '');
+// 	var taxes = _.values(_100.depart.taxesAndFees);
+// 	var tax   = taxes.reduce(function(all, _tax) {
+// 		return +_tax + all;
+// 	}, 0);
+// 	return basic + (tax / this.dt.passengersNum);
+// }
 function calculateInfant(results) {
 	if (!!this.dt) {
 		for(var i = 1; i <=3; i++){
@@ -69,7 +70,7 @@ var airasiaPrototype = {
 	init            : init,
 	getAll          : getAll,
 	calculateAdult   : calculateAdult,
-	calculateChild   : calculateChild,
+	calculateChild   : calculateAdult,
 	calculateInfant  : calculateInfant,
 	calculateBasic   : calculateBasic,
 	calculateBaggage : calculateBaggage,
