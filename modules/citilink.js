@@ -66,6 +66,7 @@ function getPrice(results, type) {
 			return result;
 		return result += (+num);
 	}, 0);
-	return (generalTax / this.dt.passengersNum) + (1.1 * basic);
+	var paxNum = this.dt.passengersNum === 1 ? 2 : this.dt.passengersNum;
+	return (generalTax / paxNum) + (1.1 * basic);
 }
 module.exports = Citilink;

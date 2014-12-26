@@ -171,13 +171,13 @@ function prepareDatabaseQuery() {
 	return query;
 }
 
-function preparePricesOutputFromDB(prices) {
+function preparePricesOutputFromDB(prices) {sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 		var _this = this;
 		return _.object(
 			_.map(prices, function(value, key, object) {
 				return [key, value - _this.priceCode];
 			})
-		);
+		);ssssssssssssss
 	}
 	/**
 	 * Get cache data from db
