@@ -5,7 +5,7 @@ var _ = require('lodash');
 numeral.defaultFormat('0,0');
 function init (args) {
 	this._super(args);
-	this.defaultModes = ['111'];
+	this.defaultModes = ['101'];
 	this.taxes = [ 'basixpax', 'pajaxpax', 'iwjrpax', 'surchargeFreepax', 'extraCoverpax', ];
 }
 function getAll() {
@@ -31,7 +31,7 @@ function calculateAdult(results) {
 	return basic + tax;
 }
 function calculateChild (results) {
-	var _111 = results[0].faredetail.child;
+	var _111 = results[0].faredetail.adult;
 	var basic = numeral().unformat(_111.basicpax);
 	var tax = this.taxes.reduce(function (total, tax) {
 		return total + (numeral().unformat(_111[tax]) || 0);
