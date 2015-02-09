@@ -233,7 +233,7 @@ function preparePricesInputToDB(prices) {
 		var _this = this;
 		return _.object(
 			_.map(prices, function(value, key, object) {
-				return [key, value + _this.priceCode];
+				return [key, value];
 			})
 		);
 	}
