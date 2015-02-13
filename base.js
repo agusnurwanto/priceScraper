@@ -230,6 +230,7 @@ function getCache() {
 }
 
 function preparePricesInputToDB(prices) {
+		if(typeof prices == 'object') return prices;
 		var _this = this;
 		return _.object(
 			_.map(prices, function(value, key, object) {

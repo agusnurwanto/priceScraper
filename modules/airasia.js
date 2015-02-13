@@ -58,13 +58,13 @@ function calculateBasic(results) {
 function calculateBaggage(results) {
 	var _100 = results[0];
 	var baggages = _100.depart.addOns.baggage;
-	// var total = 0
-	return baggages.reduce(function (total, baggage) {
-		var ssrs = baggage.availableSsrs;
-		return total + _.min(ssrs, function (ssr) {
-			return ssr.price || 0;
-		}).price || 0;
-	}, 0);
+	var price = 0;
+	try{
+		price = baggages[0].availableSsrs[0].price;
+	}catch(e){
+		console.log(e);
+	}
+	return price;
 }
 var airasiaPrototype = {
 	init            : init,
