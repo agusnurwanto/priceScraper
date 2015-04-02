@@ -12,7 +12,8 @@ var airlines = {
 	"garuda": 3,
 	"lion": 4,
 	"sriwijaya": 5,
-	"xpress": 6
+	"xpress": 6,
+	"kalstar": 7
 };
 _.mixin(require('underscore.deep'));
 /**
