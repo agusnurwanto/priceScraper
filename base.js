@@ -49,6 +49,13 @@ function setOptions() {
 			};
 			var options = _.deepExtend(defaults, args);
 			for (key in defaults) {
+				if(key=='dt'){
+					for(var i in options[key]){
+						try{
+							options[key][i] = options[key][i].toLowerCase();
+						}catch(e){}
+					}
+				}
 				value = options[key];
 				this[key] = value;
 				if (typeof this[key] === 'string')
