@@ -12,8 +12,7 @@ function getAll() {
 		.then(function (results) {
 			// console.log(results);
 			var bodies = results.map(function (res) {
-				// console.log(res.body);
-				return JSON.parse(res.body)[0].price;
+				return JSON.parse(res.body).body[0].price;
 			});
 			// console.log(bodies,'bodies');
 			var _prices = [];
@@ -33,6 +32,7 @@ function getAll() {
 }
 function calculateAdult(results) {
 	var _100 = results[0];
+	console.log(_100);
 	return +_100.total;
 }
 function calculateChild(results) {
@@ -42,6 +42,7 @@ function calculateChild(results) {
 function calculateInfant(results) {
 	var _100 = results[0];
 	var _101 = results[1];
+	console.log(_101);
 	return _101.total - _100.total;
 }
 function calculateBasic(results) {
